@@ -1,0 +1,356 @@
+# Grid Kitchen noise catalog (schema: schemas/noise_catalog.linkml.yaml).
+# Converted from "Noise Level Catalog.xlsx" (SharePoint) on 2026-11-10; this file is now the source.
+# Every spreadsheet row gave epsilon 0.5 / delta 1e-5 ("moderate"), so epsilon and delta come from
+# the mode (PNNL-37723 Table 1), not the rule.
+modes:
+- name: low
+  epsilon: 1.0
+  delta: 1.0e-05
+- name: moderate
+  epsilon: 0.5
+  delta: 1.0e-05
+- name: high
+  epsilon: 0.1
+  delta: 1.0e-12
+rules:
+- target: transformers.kva
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 5.0
+  max_value: 100000.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: transformers.count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: transformers.is_substation_transformer
+  mechanism: randomized_response
+  modes:
+  - high
+  note: We can use Randomized Response for a boolean variable, but giving incorrect information may reduce
+    the utility of the dataset. We can keep the same value for moderate privacy; use Randomized Response
+    for high privacy.
+- target: transformers.num_phase
+  mechanism: none
+  note: We can use Randomized Response for this variable (considering it as a boolean jump from 1 to 3),
+    but giving incorrect information may reduce the utility of the dataset. We can keep the same value
+    for moderate privacy; use Randomized Response for high privacy (but not preferred).
+- target: transformers.high_kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 4.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: transformers.low_kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.12
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise; this actually mimics the settings for the high_kv,
+    but we can optimize it more with real world data. If we see that most utilities have low_kv in terms
+    of 0.01 or 0.1 kV, we can change it accordingly.
+- target: transformers.avg_customers_served
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  note: Use Gaussian Noise; combining different noise calculation strategies will provide stronger privacy
+    protection; max and min_customers_served_global are the highest and lowest values for the corresponding
+    variables across the whole dataset. n is the number of transformers in this dataset
+- target: transformers.min_customers_served
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: transformers.max_customers_served
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: transformers.std_customers_served
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  note: Use Gaussian Noise
+- target: transformers.min_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise
+- target: transformers.avg_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise; max and min_pct_peak_loading_global are the highest and lowest values for
+    the corresponding variables across the whole dataset. n is the number of transformers in this dataset
+- target: transformers.max_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise
+- target: transformers.std_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise
+- target: feeder_sections.kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: feeder_sections.num_phase
+  mechanism: none
+- target: feeder_sections.construction_type
+  mechanism: none
+  note: 'Since it has only two possible values : "Overhead" or "underground", it is practical to send
+    the actual values'
+- target: feeder_sections.count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: feeder_sections.avg_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.min_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.max_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.std_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.min_ampacity
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.avg_ampacity
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Gaussian Noise; \max_ampacity_global and min_ampacity_global are the highest and lowest values
+    over the dataset. n is the number of feeder sections in the dataset
+- target: feeder_sections.max_ampacity
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.std_ampacity
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.min_customers_served
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: feeder_sections.avg_customers_served
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  note: Use Gaussian Noise; combining different noise calculation strategies will provide stronger privacy
+    protection; max and min_customers_served_global are the highest and lowest values for the corresponding
+    variables across the whole dataset. n is the number of feeder sections in this dataset
+- target: feeder_sections.max_customers_served
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: feeder_sections.std_customers_served
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  note: Use Gaussian Noise
+- target: feeder_sections.min_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.avg_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.max_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise;
+- target: feeder_sections.std_pct_peak_loading
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  max_value: 150.0
+  note: Use Gaussian Noise;
+- target: capacitors.kvar
+  mechanism: gaussian
+  sensitivity: 10.0
+  min_value: 0.01
+  max_value: 3500.0
+  note: 10 kvar is the smallest significant change in this case
+- target: capacitors.num_phase
+  mechanism: none
+- target: capacitors.kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: capacitors.install_type
+  mechanism: none
+  note: 'Since it has only two possible values : "Fixed" or "Switched", it is practical to send the actual
+    values'
+- target: capacitors.count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: regulators.kva
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.01
+  max_value: 3000.0
+  note: Use Gaussian Noise;
+- target: regulators.num_phase
+  mechanism: none
+- target: regulators.kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: regulators.count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: switches.num_phase
+  mechanism: none
+- target: switches.kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 0.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: switches.is_normally_open
+  mechanism: randomized_response
+  modes:
+  - high
+  note: We can use Randomized Response for a boolean variable, but giving incorrect information may reduce
+    the utility of the dataset. We can keep the same value for moderate privacy; use Randomized Response
+    for high privacy.
+- target: switches.count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: switches.avg_ampacity
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Discrete Laplace Mechanism since 399.15 does not make sense if the real value is 400
+- target: switches.min_ampacity
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Discrete Laplace Mechanism
+- target: switches.max_ampacity
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Discrete Laplace Mechanism
+- target: switches.std_ampacity
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  max_value: 1000.0
+  note: Use Discrete Laplace Mechanism
+- target: substations.kva
+  mechanism: gaussian
+  sensitivity: 1.0
+- target: substations.high_kv
+  mechanism: gaussian
+  sensitivity: 0.1
+  min_value: 4.0
+  max_value: 35.0
+  note: Use Gaussian Noise; sensitivity is set to 0.1 and not 0.01 since the general increase is in units
+    of 0.1 kV and this can add more "meaningful" noise.
+- target: substations.feeder_count
+  mechanism: discrete_laplace
+  sensitivity: 1.0
+  min_value: 1.0
+  max_value: 8.0
+  note: Use Discrete Laplace Mechanism to calculate the noise; it will always return an integer
+- target: substations.avg_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_n
+  min_value: 0.0
+  max_value: 50.0
+  note: Use Gaussian Noise; max_feeder_miles_global and min_feeder_miles_global are the highest and lowest
+    values over the dataset. n is the number of substations in the dataset
+- target: substations.min_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 50.0
+  note: Use Gaussian Noise;
+- target: substations.max_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  min_value: 0.0
+  max_value: 50.0
+  note: Use Gaussian Noise;
+- target: substations.std_feeder_miles
+  mechanism: gaussian
+  sensitivity: 1.0
+  sensitivity_kind: range_over_sqrt_n
+  min_value: 0.0
+  max_value: 50.0
+  note: Use Gaussian Noise;

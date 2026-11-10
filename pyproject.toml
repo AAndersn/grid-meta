@@ -28,7 +28,8 @@ dependencies = [
   "pydantic~=2.11.5",
   "pandas~=2.2.3",
   "click~=8.2.1",
-  "datamodel-code-generator~=0.31.2"
+  "datamodel-code-generator~=0.31.2",
+  "pyyaml~=6.0.2"
 ]
 
 [project.optional-dependencies]
@@ -64,7 +65,7 @@ select = [
   "B",    # flake8-bugbear
 ]
 ignore = ["C901"]
-exclude = ["docs/doc.py"]
+exclude = ["docs/doc.py", "src/gridmeta/noise_catalog_models.py"]
 
 [tool.ruff.format]
 quote-style = "double"

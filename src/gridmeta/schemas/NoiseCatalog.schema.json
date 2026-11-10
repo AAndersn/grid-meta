@@ -1,0 +1,195 @@
+{
+    "$defs": {
+        "Mechanism": {
+            "description": "",
+            "enum": [
+                "gaussian",
+                "discrete_laplace",
+                "randomized_response",
+                "none"
+            ],
+            "title": "Mechanism",
+            "type": "string"
+        },
+        "NoiseCatalog": {
+            "additionalProperties": false,
+            "description": "The privacy modes and one noise rule per catalogued property.",
+            "properties": {
+                "modes": {
+                    "items": {
+                        "$ref": "#/$defs/PrivacyMode"
+                    },
+                    "type": "array"
+                },
+                "rules": {
+                    "items": {
+                        "$ref": "#/$defs/NoiseRule"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "modes",
+                "rules"
+            ],
+            "title": "NoiseCatalog",
+            "type": "object"
+        },
+        "NoiseRule": {
+            "additionalProperties": false,
+            "description": "How one property is perturbed.",
+            "if": {
+                "properties": {
+                    "mechanism": {
+                        "anyOf": [
+                            {
+                                "const": "gaussian"
+                            },
+                            {
+                                "const": "discrete_laplace"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "mechanism"
+                ]
+            },
+            "properties": {
+                "max_value": {
+                    "description": "Largest plausible value; noisy values are clipped to it. Absent means unbounded.",
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "mechanism": {
+                    "$ref": "#/$defs/Mechanism"
+                },
+                "min_value": {
+                    "description": "Smallest plausible value; noisy values are clipped to it.",
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "modes": {
+                    "description": "The modes that apply this rule; absent means every mode.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "note": {
+                    "description": "Why this mechanism and sensitivity were chosen.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "sensitivity": {
+                    "description": "In the property's own units when sensitivity_kind is absolute; otherwise a multiplier on the range term (1 for the catalog's plain (max - min) / n).",
+                    "minimum": 0,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "sensitivity_kind": {
+                    "$ref": "#/$defs/SensitivityKind"
+                },
+                "target": {
+                    "description": "<component>.<property>, e.g. transformers.kva.",
+                    "pattern": "^[a-z_]+\\.[a-z_]+$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "target",
+                "mechanism"
+            ],
+            "then": {
+                "properties": {
+                    "sensitivity": {}
+                },
+                "required": [
+                    "sensitivity"
+                ]
+            },
+            "title": "NoiseRule",
+            "type": "object"
+        },
+        "PrivacyMode": {
+            "additionalProperties": false,
+            "description": "A named privacy level; smaller epsilon and delta give stronger privacy and more noise.",
+            "properties": {
+                "delta": {
+                    "description": "Probability of failing the epsilon guarantee (Gaussian mechanism only).",
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "epsilon": {
+                    "description": "Privacy budget.",
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "epsilon",
+                "delta"
+            ],
+            "title": "PrivacyMode",
+            "type": "object"
+        },
+        "SensitivityKind": {
+            "description": "",
+            "enum": [
+                "absolute",
+                "range_over_n",
+                "range_over_sqrt_n"
+            ],
+            "title": "SensitivityKind",
+            "type": "string"
+        }
+    },
+    "$id": "https://w3id.org/grid-kitchen/gridmeta/noise-catalog",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "additionalProperties": true,
+    "description": "The privacy modes and one noise rule per catalogued property.",
+    "metamodel_version": "1.7.0",
+    "properties": {
+        "modes": {
+            "items": {
+                "$ref": "#/$defs/PrivacyMode"
+            },
+            "type": "array"
+        },
+        "rules": {
+            "items": {
+                "$ref": "#/$defs/NoiseRule"
+            },
+            "type": "array"
+        }
+    },
+    "required": [
+        "modes",
+        "rules"
+    ],
+    "title": "noise_catalog",
+    "type": "object",
+    "version": "1.0.0"
+}
+
