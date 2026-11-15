@@ -1,0 +1,2 @@
+{"status": "PASS", "converged": true, "solver": "OpenDSS (opendssdirect 0.10)", "solved_at": "2026-11-10T21:04:00Z",
+ "min_vpu": 0.962, "max_vpu": 1.031, "total_load_kw": 4210.0, "isolated_buses": 0}

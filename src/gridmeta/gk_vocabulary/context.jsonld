@@ -1,0 +1,132 @@
+{
+  "@context": {
+    "gk": "https://gridkitchen.pnnl.gov/ns/gk#",
+    "dqv": "http://www.w3.org/ns/dqv#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "spdx": "http://spdx.org/rdf/terms#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "adms": "http://www.w3.org/ns/adms#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "org": "http://www.w3.org/ns/org#",
+    "gk:modelClass": {
+      "@type": "@id"
+    },
+    "gk:useCase": {
+      "@type": "@id"
+    },
+    "gk:application": {
+      "@type": "@id",
+      "@container": "@set"
+    },
+    "gk:regionClass": {
+      "@type": "@id"
+    },
+    "gk:setting": {
+      "@type": "@id"
+    },
+    "gk:settingShares": {
+      "@container": "@list"
+    },
+    "gk:share": {
+      "@type": "xsd:decimal"
+    },
+    "gk:climateRegion": {
+      "@type": "@id"
+    },
+    "gk:primaryVoltage": {
+      "@type": "xsd:decimal"
+    },
+    "gk:voltageClass": {
+      "@type": "xsd:decimal"
+    },
+    "gk:hvConnection": {
+      "@type": "@id"
+    },
+    "gk:mvConnection": {
+      "@type": "@id"
+    },
+    "gk:lvConnection": {
+      "@type": "@id"
+    },
+    "gk:feederLength": {
+      "@type": "xsd:decimal"
+    },
+    "gk:undergroundShare": {
+      "@type": "xsd:decimal"
+    },
+    "gk:loadCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:customerCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:loadSizeDistribution": {
+      "@container": "@list"
+    },
+    "gk:dgSizeDistribution": {
+      "@container": "@list"
+    },
+    "gk:lowerBound": {
+      "@type": "xsd:decimal"
+    },
+    "gk:upperBound": {
+      "@type": "xsd:decimal"
+    },
+    "gk:dgCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:dgCapacityAC": {
+      "@type": "xsd:decimal"
+    },
+    "gk:evCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:fuseCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:recloserCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:sectionalizerCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:regulatorCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:capacitorCount": {
+      "@type": "xsd:integer"
+    },
+    "gk:secondaryModeling": {
+      "@type": "@id"
+    },
+    "gk:geographicSpecificity": {
+      "@type": "@id"
+    },
+    "gk:siblingGroup": {
+      "@type": "xsd:string"
+    },
+    "gk:contentHash": {
+      "@type": "xsd:string"
+    },
+    "gk:component": {
+      "@type": "@id"
+    },
+    "gk:provenanceLevel": {
+      "@type": "@id"
+    },
+    "gk:archiveKey": {
+      "@type": "xsd:string"
+    },
+    "dqv:hasQualityMeasurement": {
+      "@container": "@set"
+    },
+    "dqv:isMeasurementOf": {
+      "@type": "@id"
+    },
+    "dqv:value": {
+      "@type": "xsd:decimal"
+    }
+  }
+}

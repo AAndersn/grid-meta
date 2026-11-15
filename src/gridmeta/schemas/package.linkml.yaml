@@ -1,0 +1,278 @@
+id: https://gridkitchen.pnnl.gov/ns/gk/package
+name: feeder_package
+title: Grid Kitchen feeder package
+description: >-
+  The JSON files of one feeder package, written by a pipeline and read by gridmeta and the
+  publisher (Grid Kitchen publishing contract, interface A, section 3). Regenerate the JSON Schema
+  and pydantic models with codegen.sh and never edit them by hand.
+license: BSD-3-Clause
+version: 0.1.0
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gkpkg: https://gridkitchen.pnnl.gov/ns/gk/package#
+default_prefix: gkpkg
+default_range: string
+imports:
+  - linkml:types
+
+classes:
+  Source:
+    tree_root: true
+    description: source.json, the facts the pipeline knows about the source (3.1). Never shipped.
+    attributes:
+      contract_version:
+        required: true
+        pattern: "^\\d+\\.\\d+\\.\\d+$"
+      utility:
+        range: Utility
+        required: true
+        inlined: true
+      substation:
+        required: true
+      feeder:
+        required: true
+      state:
+        required: true
+        pattern: "^[A-Z]{2}$"
+        description: USPS code of the state of the feeder head.
+      source_export_date:
+        range: date
+        required: true
+      model_class:
+        range: ModelClass
+        required: true
+      use_case:
+        range: UseCase
+        required: true
+      applications:
+        range: Application
+        multivalued: true
+        required: true
+        description: The applications of an ApplicationSpecific model; empty otherwise.
+      multi_feeder_compatible:
+        range: boolean
+        required: true
+      pipeline:
+        range: Pipeline
+        required: true
+        inlined: true
+      forbidden_strings:
+        multivalued: true
+        required: true
+        minimum_cardinality: 1
+        description: Every real name that must not appear in a shipped file.
+
+  Utility:
+    attributes:
+      name:
+        required: true
+        description: Used only for the model id and the name scan; never published.
+
+  Pipeline:
+    attributes:
+      name:
+        required: true
+      commit:
+        required: true
+        pattern: "^[0-9a-f]{40}$"
+      run:
+        required: true
+      cim_profiles:
+        required: true
+        description: The cim-profiles version the package was built with.
+
+  Provenance:
+    description: provenance.json, per-component source and inferred counts (3.2).
+    attributes:
+      contract_version:
+        required: true
+        pattern: "^\\d+\\.\\d+\\.\\d+$"
+      components:
+        range: Components
+        inlined: true
+        required: true
+
+  Components:
+    description: >-
+      One entry for every component, including the absent ones. The names are those of the gk
+      Component enumeration (checked by tests/test_package.py).
+    attributes:
+      Topology:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      Conductors:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      DistributionTransformers:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      SubstationSource:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      Loads:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      DER:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      Protection:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      VoltageControl:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      Secondary:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      Coordinates:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+      TimeSeries:
+        range: ComponentProvenance
+        required: true
+        inlined: true
+
+  ComponentProvenance:
+    attributes:
+      objects:
+        range: integer
+        required: true
+        minimum_value: 0
+        description: Number of model objects of the component.
+      inferred:
+        range: integer
+        required: true
+        minimum_value: 0
+        description: How many of the objects have a key parameter not taken from the source data.
+      missing:
+        range: boolean
+        required: true
+        description: The component exists in the real feeder, but the source has no data for it.
+      notes:
+        multivalued: true
+        required: true
+
+  Verify:
+    description: verify.json, the power-flow result (3.3).
+    attributes:
+      status:
+        range: VerifyStatus
+        required: true
+      converged:
+        range: boolean
+        required: true
+      solver:
+        required: true
+      solved_at:
+        range: datetime
+        required: true
+      min_vpu:
+        range: float
+        required: true
+      max_vpu:
+        range: float
+        required: true
+      total_load_kw:
+        range: float
+        required: true
+      isolated_buses:
+        range: integer
+        required: true
+        minimum_value: 0
+
+  Sanitize:
+    description: sanitize.json, the summary of a grid-reducer sanitise run (3.4).
+    attributes:
+      tool:
+        required: true
+      version:
+        required: true
+      config_sha256:
+        required: true
+        pattern: "^[0-9a-f]{64}$"
+      reduce:
+        range: ReduceSettings
+        required: true
+        inlined: true
+      layout:
+        range: LayoutSettings
+        required: true
+        inlined: true
+      noise:
+        range: NoiseSettings
+        required: true
+        inlined: true
+      rename:
+        range: boolean
+        required: true
+
+  ReduceSettings:
+    attributes:
+      transformers:
+        range: boolean
+        required: true
+      lines:
+        range: boolean
+        required: true
+
+  LayoutSettings:
+    attributes:
+      enabled:
+        range: boolean
+        required: true
+      obfuscation:
+        range: PrivacyLevel
+        required: true
+
+  NoiseSettings:
+    attributes:
+      transformers:
+        range: PrivacyLevel
+        required: true
+      lines:
+        range: PrivacyLevel
+        required: true
+      loads:
+        range: PrivacyLevel
+        required: true
+      layout:
+        range: PrivacyLevel
+        required: true
+
+enums:
+  # The same values as the gk enumerations of the same name (checked by tests/test_package.py).
+  ModelClass:
+    permissible_values:
+      Geographic:
+      Generic:
+  UseCase:
+    permissible_values:
+      Representative:
+      ApplicationSpecific:
+  Application:
+    permissible_values:
+      Protection:
+      VoltageManagement:
+      DERManagement:
+      LoadManagement:
+  VerifyStatus:
+    permissible_values:
+      PASS:
+      FAIL:
+  PrivacyLevel:
+    description: grid-reducer PrivacyLevel.
+    permissible_values:
+      none:
+      low:
+      moderate:
+      high:

@@ -1,0 +1,518 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gridkitchen.pnnl.gov/ns/gk/0.1.0/FeederRecord.schema.json",
+  "title": "FeederRecord",
+  "description": "Every property of one feeder that can be computed from its feeder package. A property is left out when its value is unknown; zero means a confirmed zero.",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "description": "JSON-LD context; not validated."
+    },
+    "gk:vocabularyVersion": {
+      "description": "The version of the Grid Kitchen vocabulary the record uses.",
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "gk:modelClass": {
+      "description": "Whether the model is built from a real feeder's data or is a generic model.",
+      "$ref": "#/$defs/ModelClass"
+    },
+    "gk:useCase": {
+      "description": "Whether the model represents a feeder in general or was built for given applications.",
+      "$ref": "#/$defs/UseCase"
+    },
+    "gk:application": {
+      "description": "The applications the model was built for. Present only when the use case is ApplicationSpecific.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Application"
+      }
+    },
+    "gk:state": {
+      "description": "USPS code of the state of the feeder head.",
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "gk:regionClass": {
+      "description": "Census CBSA type of the county that holds the customer-weighted majority of the service points.",
+      "$ref": "#/$defs/RegionClass"
+    },
+    "gk:setting": {
+      "description": "NCES locale of the service points, as the customer-weighted majority. Ties go to the earlier value in scheme order.",
+      "$ref": "#/$defs/Setting"
+    },
+    "gk:settingShares": {
+      "description": "Share of customers in each setting, in scheme order, with zero shares left out.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SettingShare"
+      }
+    },
+    "gk:climateRegion": {
+      "description": "DOE Building America climate region of the county that holds the customer-weighted majority of the service points.",
+      "$ref": "#/$defs/ClimateRegion"
+    },
+    "gk:primaryVoltage": {
+      "description": "Line-to-line nominal voltage of the feeder head.",
+      "type": "number",
+      "minimum": 0
+    },
+    "gk:voltageClass": {
+      "description": "The smallest of the classes 5, 15, 25 and 35 kV at or above the primary voltage.",
+      "type": "number",
+      "enum": [
+        5,
+        15,
+        25,
+        35
+      ]
+    },
+    "gk:hvConnection": {
+      "description": "Winding connection of the high side of the substation transformer. Left out when that transformer is not modelled.",
+      "$ref": "#/$defs/Connection"
+    },
+    "gk:mvConnection": {
+      "description": "Winding connection of the low side of the substation transformer, otherwise the connection of the source.",
+      "$ref": "#/$defs/Connection"
+    },
+    "gk:lvConnection": {
+      "description": "The most common secondary connection of the distribution transformers, by count.",
+      "$ref": "#/$defs/Connection"
+    },
+    "gk:feederLength": {
+      "description": "Total length of the line segments at the primary voltage.",
+      "type": "number",
+      "minimum": 0
+    },
+    "gk:undergroundShare": {
+      "description": "Underground share of the feeder length.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "gk:loadCount": {
+      "description": "Number of loads (EnergyConsumer).",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:customerCount": {
+      "description": "Sum of the customer counts of the loads.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:loadSizeDistribution": {
+      "description": "Share of loads in each size bin, by real power. Left out when there are no loads.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SizeBin"
+      },
+      "minItems": 5,
+      "maxItems": 5
+    },
+    "gk:dgCount": {
+      "description": "Number of distributed generators (PowerElectronicsConnection and SynchronousMachine), excluding the source.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:dgCapacityAC": {
+      "description": "Sum of the rated apparent power of the distributed generators.",
+      "type": "number",
+      "minimum": 0
+    },
+    "gk:dgSizeDistribution": {
+      "description": "Share of distributed generators in each size bin, by rated apparent power. Left out when there are no distributed generators.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SizeBin"
+      },
+      "minItems": 5,
+      "maxItems": 5
+    },
+    "gk:evCount": {
+      "description": "Number of electric vehicles. Present only when the source has EV data.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:fuseCount": {
+      "description": "Number of fuses.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:recloserCount": {
+      "description": "Number of reclosers, including the feeder head device.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:sectionalizerCount": {
+      "description": "Number of sectionalizers.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:substationLTC": {
+      "description": "Whether there is a load tap changer on the substation transformer or at the feeder head.",
+      "type": "boolean"
+    },
+    "gk:regulatorCount": {
+      "description": "Number of line regulator banks, not single-phase units. The substation LTC is not counted.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:capacitorCount": {
+      "description": "Number of capacitor banks, not single-phase units.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "gk:secondaryModeling": {
+      "description": "How the secondary system below the distribution transformers is modelled.",
+      "$ref": "#/$defs/SecondaryModeling"
+    },
+    "gk:lowVoltageNetwork": {
+      "description": "Whether a meshed secondary network is present.",
+      "type": "boolean"
+    },
+    "gk:geographicSpecificity": {
+      "description": "The kind of positions in the shipped data file.",
+      "$ref": "#/$defs/GeographicSpecificity"
+    },
+    "gk:multiFeederCompatible": {
+      "description": "Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined.",
+      "type": "boolean"
+    },
+    "dqv:hasQualityMeasurement": {
+      "description": "One provenance measurement per component.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/QualityMeasurement"
+      },
+      "minItems": 11,
+      "maxItems": 11
+    }
+  },
+  "required": [
+    "gk:vocabularyVersion",
+    "gk:modelClass",
+    "gk:useCase",
+    "gk:state",
+    "gk:geographicSpecificity",
+    "gk:multiFeederCompatible",
+    "dqv:hasQualityMeasurement"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "SettingShare": {
+      "title": "SettingShare",
+      "description": "The share of customers in one setting.",
+      "type": "object",
+      "properties": {
+        "gk:setting": {
+          "description": "NCES locale of the service points, as the customer-weighted majority. Ties go to the earlier value in scheme order.",
+          "$ref": "#/$defs/Setting"
+        },
+        "gk:share": {
+          "description": "A fraction from 0 to 1.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "gk:setting",
+        "gk:share"
+      ],
+      "additionalProperties": false
+    },
+    "SizeBin": {
+      "title": "SizeBin",
+      "description": "One half-open size bin [lowerBound, upperBound) and the share of objects in it. The bins are [0, 5), [5, 50), [50, 500), [500, 5000) and [5000, ∞).",
+      "type": "object",
+      "properties": {
+        "gk:lowerBound": {
+          "description": "Inclusive lower bound of a size bin, in the unit of its distribution.",
+          "type": "number",
+          "minimum": 0
+        },
+        "gk:upperBound": {
+          "description": "Exclusive upper bound of a size bin, in the unit of its distribution. The last bin has none.",
+          "type": "number",
+          "minimum": 0
+        },
+        "gk:share": {
+          "description": "A fraction from 0 to 1.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "gk:lowerBound",
+        "gk:share"
+      ],
+      "additionalProperties": false
+    },
+    "QualityMeasurement": {
+      "title": "QualityMeasurement",
+      "description": "The provenance stoplight of one component (W3C DQV).",
+      "type": "object",
+      "properties": {
+        "@type": {
+          "const": "dqv:QualityMeasurement",
+          "description": "The JSON-LD @type of the object."
+        },
+        "dqv:isMeasurementOf": {
+          "description": "The metric a quality measurement measures.",
+          "$ref": "#/$defs/Metric"
+        },
+        "gk:component": {
+          "description": "The model component a quality measurement is about.",
+          "$ref": "#/$defs/Component"
+        },
+        "dqv:value": {
+          "description": "The sourced share of a component, (objects - inferred) / objects, rounded to 2 decimals. Left out when the component has no objects.",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "gk:provenanceLevel": {
+          "description": "The stoplight level of a component.",
+          "$ref": "#/$defs/ProvenanceLevel"
+        },
+        "rdfs:comment": {
+          "description": "The notes of the measurement, joined with \"; \".",
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type",
+        "dqv:isMeasurementOf",
+        "gk:component",
+        "gk:provenanceLevel"
+      ],
+      "additionalProperties": false
+    },
+    "ModelClass": {
+      "title": "ModelClass",
+      "description": "Whether a model is built from a real feeder's data.",
+      "type": "string",
+      "enum": [
+        "gk:ModelClass.Geographic",
+        "gk:ModelClass.Generic"
+      ],
+      "x-enum-varnames": [
+        "Geographic",
+        "Generic"
+      ]
+    },
+    "UseCase": {
+      "title": "UseCase",
+      "description": "What a model was built for.",
+      "type": "string",
+      "enum": [
+        "gk:UseCase.Representative",
+        "gk:UseCase.ApplicationSpecific"
+      ],
+      "x-enum-varnames": [
+        "Representative",
+        "ApplicationSpecific"
+      ]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "An application a model was built for.",
+      "type": "string",
+      "enum": [
+        "gk:Application.Protection",
+        "gk:Application.VoltageManagement",
+        "gk:Application.DERManagement",
+        "gk:Application.LoadManagement"
+      ],
+      "x-enum-varnames": [
+        "Protection",
+        "VoltageManagement",
+        "DERManagement",
+        "LoadManagement"
+      ]
+    },
+    "RegionClass": {
+      "title": "RegionClass",
+      "description": "Census core-based statistical area (CBSA) type of a county.",
+      "type": "string",
+      "enum": [
+        "gk:RegionClass.Metropolitan",
+        "gk:RegionClass.Micropolitan",
+        "gk:RegionClass.Outside"
+      ],
+      "x-enum-varnames": [
+        "Metropolitan",
+        "Micropolitan",
+        "Outside"
+      ]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Settlement type, from the NCES EDGE locale of a service point.",
+      "type": "string",
+      "enum": [
+        "gk:Setting.Urban",
+        "gk:Setting.Suburban",
+        "gk:Setting.Rural",
+        "gk:Setting.DeepRural"
+      ],
+      "x-enum-varnames": [
+        "Urban",
+        "Suburban",
+        "Rural",
+        "DeepRural"
+      ]
+    },
+    "ClimateRegion": {
+      "title": "ClimateRegion",
+      "description": "DOE Building America climate region.",
+      "type": "string",
+      "enum": [
+        "gk:ClimateRegion.HotHumid",
+        "gk:ClimateRegion.HotDry",
+        "gk:ClimateRegion.MixedHumid",
+        "gk:ClimateRegion.MixedDry",
+        "gk:ClimateRegion.Cold",
+        "gk:ClimateRegion.VeryCold",
+        "gk:ClimateRegion.Subarctic",
+        "gk:ClimateRegion.Marine"
+      ],
+      "x-enum-varnames": [
+        "HotHumid",
+        "HotDry",
+        "MixedHumid",
+        "MixedDry",
+        "Cold",
+        "VeryCold",
+        "Subarctic",
+        "Marine"
+      ]
+    },
+    "Connection": {
+      "title": "Connection",
+      "description": "Winding connection of a transformer or source.",
+      "type": "string",
+      "enum": [
+        "gk:Connection.Delta",
+        "gk:Connection.Wye",
+        "gk:Connection.WyeGrounded",
+        "gk:Connection.CenterTap",
+        "gk:Connection.OpenDelta",
+        "gk:Connection.OpenWye",
+        "gk:Connection.Zigzag",
+        "gk:Connection.SinglePhase"
+      ],
+      "x-enum-varnames": [
+        "Delta",
+        "Wye",
+        "WyeGrounded",
+        "CenterTap",
+        "OpenDelta",
+        "OpenWye",
+        "Zigzag",
+        "SinglePhase"
+      ]
+    },
+    "SecondaryModeling": {
+      "title": "SecondaryModeling",
+      "description": "How the secondary system below the distribution transformers is modelled.",
+      "type": "string",
+      "enum": [
+        "gk:SecondaryModeling.None",
+        "gk:SecondaryModeling.AggregateLoad",
+        "gk:SecondaryModeling.IndividualCustomers"
+      ],
+      "x-enum-varnames": [
+        "None",
+        "AggregateLoad",
+        "IndividualCustomers"
+      ]
+    },
+    "GeographicSpecificity": {
+      "title": "GeographicSpecificity",
+      "description": "The kind of positions in a shipped data file.",
+      "type": "string",
+      "enum": [
+        "gk:GeographicSpecificity.LatLong",
+        "gk:GeographicSpecificity.XY",
+        "gk:GeographicSpecificity.None"
+      ],
+      "x-enum-varnames": [
+        "LatLong",
+        "XY",
+        "None"
+      ]
+    },
+    "ProvenanceLevel": {
+      "title": "ProvenanceLevel",
+      "description": "The stoplight level of a component.",
+      "type": "string",
+      "enum": [
+        "gk:ProvenanceLevel.Sourced",
+        "gk:ProvenanceLevel.Inferred",
+        "gk:ProvenanceLevel.Missing",
+        "gk:ProvenanceLevel.NotPresent"
+      ],
+      "x-enum-varnames": [
+        "Sourced",
+        "Inferred",
+        "Missing",
+        "NotPresent"
+      ]
+    },
+    "Component": {
+      "title": "Component",
+      "description": "A part of a feeder model that gets its own provenance light.",
+      "type": "string",
+      "enum": [
+        "gk:Component.Topology",
+        "gk:Component.Conductors",
+        "gk:Component.DistributionTransformers",
+        "gk:Component.SubstationSource",
+        "gk:Component.Loads",
+        "gk:Component.DER",
+        "gk:Component.Protection",
+        "gk:Component.VoltageControl",
+        "gk:Component.Secondary",
+        "gk:Component.Coordinates",
+        "gk:Component.TimeSeries"
+      ],
+      "x-enum-varnames": [
+        "Topology",
+        "Conductors",
+        "DistributionTransformers",
+        "SubstationSource",
+        "Loads",
+        "DER",
+        "Protection",
+        "VoltageControl",
+        "Secondary",
+        "Coordinates",
+        "TimeSeries"
+      ]
+    },
+    "Metric": {
+      "title": "Metric",
+      "description": "A DQV metric of the feeder record.",
+      "type": "string",
+      "enum": [
+        "gk:Metric.SourcedShare"
+      ],
+      "x-enum-varnames": [
+        "SourcedShare"
+      ]
+    },
+    "Dimension": {
+      "title": "Dimension",
+      "description": "A DQV quality dimension of the feeder record.",
+      "type": "string",
+      "enum": [
+        "gk:Dimension.Provenance"
+      ],
+      "x-enum-varnames": [
+        "Provenance"
+      ]
+    }
+  }
+}

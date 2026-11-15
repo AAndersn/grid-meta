@@ -1,0 +1,25 @@
+{
+  "contract_version": "0.1.2",
+  "utility": {
+    "name": "Example Electric Cooperative"
+  },
+  "substation": "Example Substation",
+  "feeder": "Example Feeder 1",
+  "state": "VT",
+  "source_export_date": "2026-07-21",
+  "model_class": "Geographic",
+  "use_case": "Representative",
+  "applications": [],
+  "multi_feeder_compatible": false,
+  "pipeline": {
+    "name": "vec_cim",
+    "commit": "0000000000000000000000000000000000000000",
+    "run": "20261110-example",
+    "cim_profiles": "0.2.0a1"
+  },
+  "forbidden_strings": [
+    "Example Electric Cooperative",
+    "Example Substation",
+    "Example Feeder 1"
+  ]
+}

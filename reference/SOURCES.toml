@@ -1,0 +1,33 @@
+# Reference datasets for gridmeta's location-derived properties (Grid Kitchen publishing
+# contract 4.5). This is a template: the real directory is gridpantry/datasets/reference (DVC).
+# A person downloads each file once, checks the URL and vintage, fills in its SHA-256
+# (`sha256sum <file>`) and adds the directory to DVC. gridmeta refuses a file whose SHA-256 does
+# not match, and never downloads anything itself. See README.md.
+
+[nces_locale]
+# NCES EDGE locale boundaries: the zipped shapefile, with the 2-digit LOCALE field.
+file = "EDGE_Locale23_US.zip"
+url = "https://nces.ed.gov/programs/edge/data/EDGE_Locale23_US.zip"
+vintage = "2023"
+sha256 = ""
+
+[counties]
+# Census cartographic boundary file, counties, 1:500,000, with the 5-digit GEOID field.
+file = "cb_2023_us_county_500k.zip"
+url = "https://www2.census.gov/geo/tiger/GENZ2023/shp/cb_2023_us_county_500k.zip"
+vintage = "2023"
+sha256 = ""
+
+[cbsa]
+# Census CBSA delineation file (list 1): counties of metropolitan and micropolitan areas.
+file = "list1_2023.xlsx"
+url = "https://www2.census.gov/programs-surveys/metro-micro/geographies/reference-files/2023/delineation-files/list1_2023.xlsx"
+vintage = "July 2023"
+sha256 = ""
+
+[climate_regions]
+# DOE Building America climate region of every county, transcribed by a person (README.md).
+file = "building_america_climate_regions.csv"
+url = ""
+vintage = ""
+sha256 = ""

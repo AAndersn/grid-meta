@@ -1,0 +1,740 @@
+{
+  "version": "0.1.0",
+  "namespace": "https://gridkitchen.pnnl.gov/ns/gk#",
+  "properties": {
+    "gk:vocabularyVersion": {
+      "label": "Vocabulary version",
+      "description": "The version of the Grid Kitchen vocabulary the record uses.",
+      "range": "xsd:string",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:modelClass": {
+      "label": "Model class",
+      "description": "Whether the model is built from a real feeder's data or is a generic model.",
+      "range": "gk:ModelClass",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:useCase": {
+      "label": "Use case",
+      "description": "Whether the model represents a feeder in general or was built for given applications.",
+      "range": "gk:UseCase",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:application": {
+      "label": "Application",
+      "description": "The applications the model was built for. Present only when the use case is ApplicationSpecific.",
+      "range": "gk:Application",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:state": {
+      "label": "State",
+      "description": "USPS code of the state of the feeder head.",
+      "range": "xsd:string",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:regionClass": {
+      "label": "Region class",
+      "description": "Census CBSA type of the county that holds the customer-weighted majority of the service points.",
+      "range": "gk:RegionClass",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:setting": {
+      "label": "Setting",
+      "description": "NCES locale of the service points, as the customer-weighted majority. Ties go to the earlier value in scheme order.",
+      "range": "gk:Setting",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:settingShares": {
+      "label": "Setting shares",
+      "description": "Share of customers in each setting, in scheme order, with zero shares left out.",
+      "range": "gk:SettingShare",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:share": {
+      "label": "Share",
+      "description": "A fraction from 0 to 1.",
+      "range": "xsd:decimal",
+      "unit": "1",
+      "unitIRI": "http://qudt.org/vocab/unit/FRACTION",
+      "component": null
+    },
+    "gk:climateRegion": {
+      "label": "Climate region",
+      "description": "DOE Building America climate region of the county that holds the customer-weighted majority of the service points.",
+      "range": "gk:ClimateRegion",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:primaryVoltage": {
+      "label": "Primary voltage",
+      "description": "Line-to-line nominal voltage of the feeder head.",
+      "range": "xsd:decimal",
+      "unit": "kV",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloV",
+      "component": "gk:Component.Topology"
+    },
+    "gk:voltageClass": {
+      "label": "Voltage class",
+      "description": "The smallest of the classes 5, 15, 25 and 35 kV at or above the primary voltage.",
+      "range": "xsd:decimal",
+      "unit": "kV",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloV",
+      "component": "gk:Component.Topology"
+    },
+    "gk:hvConnection": {
+      "label": "HV connection",
+      "description": "Winding connection of the high side of the substation transformer. Left out when that transformer is not modelled.",
+      "range": "gk:Connection",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.SubstationSource"
+    },
+    "gk:mvConnection": {
+      "label": "MV connection",
+      "description": "Winding connection of the low side of the substation transformer, otherwise the connection of the source.",
+      "range": "gk:Connection",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.SubstationSource"
+    },
+    "gk:lvConnection": {
+      "label": "LV connection",
+      "description": "The most common secondary connection of the distribution transformers, by count.",
+      "range": "gk:Connection",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.DistributionTransformers"
+    },
+    "gk:feederLength": {
+      "label": "Feeder length",
+      "description": "Total length of the line segments at the primary voltage.",
+      "range": "xsd:decimal",
+      "unit": "km",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloM",
+      "component": "gk:Component.Topology"
+    },
+    "gk:undergroundShare": {
+      "label": "Underground share",
+      "description": "Underground share of the feeder length.",
+      "range": "xsd:decimal",
+      "unit": "1",
+      "unitIRI": "http://qudt.org/vocab/unit/FRACTION",
+      "component": "gk:Component.Conductors"
+    },
+    "gk:loadCount": {
+      "label": "Loads",
+      "description": "Number of loads (EnergyConsumer).",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Loads"
+    },
+    "gk:customerCount": {
+      "label": "Customers",
+      "description": "Sum of the customer counts of the loads.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Loads"
+    },
+    "gk:loadSizeDistribution": {
+      "label": "Load size distribution",
+      "description": "Share of loads in each size bin, by real power. Left out when there are no loads.",
+      "range": "gk:SizeBin",
+      "unit": "kW",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloW",
+      "component": "gk:Component.Loads"
+    },
+    "gk:dgSizeDistribution": {
+      "label": "DG size distribution",
+      "description": "Share of distributed generators in each size bin, by rated apparent power. Left out when there are no distributed generators.",
+      "range": "gk:SizeBin",
+      "unit": "kVA",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloV-A",
+      "component": "gk:Component.DER"
+    },
+    "gk:lowerBound": {
+      "label": "Lower bound",
+      "description": "Inclusive lower bound of a size bin, in the unit of its distribution.",
+      "range": "xsd:decimal",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:upperBound": {
+      "label": "Upper bound",
+      "description": "Exclusive upper bound of a size bin, in the unit of its distribution. The last bin has none.",
+      "range": "xsd:decimal",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:dgCount": {
+      "label": "Distributed generators",
+      "description": "Number of distributed generators (PowerElectronicsConnection and SynchronousMachine), excluding the source.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.DER"
+    },
+    "gk:dgCapacityAC": {
+      "label": "DG capacity (AC)",
+      "description": "Sum of the rated apparent power of the distributed generators.",
+      "range": "xsd:decimal",
+      "unit": "kVA",
+      "unitIRI": "http://qudt.org/vocab/unit/KiloV-A",
+      "component": "gk:Component.DER"
+    },
+    "gk:evCount": {
+      "label": "Electric vehicles",
+      "description": "Number of electric vehicles. Present only when the source has EV data.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Loads"
+    },
+    "gk:fuseCount": {
+      "label": "Fuses",
+      "description": "Number of fuses.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Protection"
+    },
+    "gk:recloserCount": {
+      "label": "Reclosers",
+      "description": "Number of reclosers, including the feeder head device.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Protection"
+    },
+    "gk:sectionalizerCount": {
+      "label": "Sectionalizers",
+      "description": "Number of sectionalizers.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Protection"
+    },
+    "gk:substationLTC": {
+      "label": "Substation LTC",
+      "description": "Whether there is a load tap changer on the substation transformer or at the feeder head.",
+      "range": "xsd:boolean",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.VoltageControl"
+    },
+    "gk:regulatorCount": {
+      "label": "Regulators",
+      "description": "Number of line regulator banks, not single-phase units. The substation LTC is not counted.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.VoltageControl"
+    },
+    "gk:capacitorCount": {
+      "label": "Capacitors",
+      "description": "Number of capacitor banks, not single-phase units.",
+      "range": "xsd:integer",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.VoltageControl"
+    },
+    "gk:secondaryModeling": {
+      "label": "Secondary modeling",
+      "description": "How the secondary system below the distribution transformers is modelled.",
+      "range": "gk:SecondaryModeling",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Secondary"
+    },
+    "gk:lowVoltageNetwork": {
+      "label": "Low-voltage network",
+      "description": "Whether a meshed secondary network is present.",
+      "range": "xsd:boolean",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Secondary"
+    },
+    "gk:geographicSpecificity": {
+      "label": "Geographic specificity",
+      "description": "The kind of positions in the shipped data file.",
+      "range": "gk:GeographicSpecificity",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Coordinates"
+    },
+    "gk:multiFeederCompatible": {
+      "label": "Multi-feeder compatible",
+      "description": "Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined.",
+      "range": "xsd:boolean",
+      "unit": null,
+      "unitIRI": null,
+      "component": "gk:Component.Topology"
+    },
+    "gk:siblingGroup": {
+      "label": "Sibling group",
+      "description": "Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with the same group are siblings. Set by the publisher, not part of the feeder record.",
+      "range": "xsd:string",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:contentHash": {
+      "label": "Content hash",
+      "description": "SHA-256 of the shipped payload files, which decides between a MINOR and a PATCH version. Set by the publisher, not part of the feeder record.",
+      "range": "xsd:string",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:component": {
+      "label": "Component",
+      "description": "The model component a quality measurement is about.",
+      "range": "gk:Component",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:provenanceLevel": {
+      "label": "Provenance level",
+      "description": "The stoplight level of a component.",
+      "range": "gk:ProvenanceLevel",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    },
+    "gk:archiveKey": {
+      "label": "Archive key",
+      "description": "Object key of a shipped archive in the model bucket. Used in catalog distributions.",
+      "range": "xsd:string",
+      "unit": null,
+      "unitIRI": null,
+      "component": null
+    }
+  },
+  "enumerations": {
+    "gk:ModelClass": {
+      "label": "Model class",
+      "description": "Whether a model is built from a real feeder's data.",
+      "values": [
+        "gk:ModelClass.Geographic",
+        "gk:ModelClass.Generic"
+      ]
+    },
+    "gk:UseCase": {
+      "label": "Use case",
+      "description": "What a model was built for.",
+      "values": [
+        "gk:UseCase.Representative",
+        "gk:UseCase.ApplicationSpecific"
+      ]
+    },
+    "gk:Application": {
+      "label": "Application",
+      "description": "An application a model was built for.",
+      "values": [
+        "gk:Application.Protection",
+        "gk:Application.VoltageManagement",
+        "gk:Application.DERManagement",
+        "gk:Application.LoadManagement"
+      ]
+    },
+    "gk:RegionClass": {
+      "label": "Region class",
+      "description": "Census core-based statistical area (CBSA) type of a county.",
+      "values": [
+        "gk:RegionClass.Metropolitan",
+        "gk:RegionClass.Micropolitan",
+        "gk:RegionClass.Outside"
+      ]
+    },
+    "gk:Setting": {
+      "label": "Setting",
+      "description": "Settlement type, from the NCES EDGE locale of a service point.",
+      "values": [
+        "gk:Setting.Urban",
+        "gk:Setting.Suburban",
+        "gk:Setting.Rural",
+        "gk:Setting.DeepRural"
+      ]
+    },
+    "gk:ClimateRegion": {
+      "label": "Climate region",
+      "description": "DOE Building America climate region.",
+      "values": [
+        "gk:ClimateRegion.HotHumid",
+        "gk:ClimateRegion.HotDry",
+        "gk:ClimateRegion.MixedHumid",
+        "gk:ClimateRegion.MixedDry",
+        "gk:ClimateRegion.Cold",
+        "gk:ClimateRegion.VeryCold",
+        "gk:ClimateRegion.Subarctic",
+        "gk:ClimateRegion.Marine"
+      ]
+    },
+    "gk:Connection": {
+      "label": "Connection",
+      "description": "Winding connection of a transformer or source.",
+      "values": [
+        "gk:Connection.Delta",
+        "gk:Connection.Wye",
+        "gk:Connection.WyeGrounded",
+        "gk:Connection.CenterTap",
+        "gk:Connection.OpenDelta",
+        "gk:Connection.OpenWye",
+        "gk:Connection.Zigzag",
+        "gk:Connection.SinglePhase"
+      ]
+    },
+    "gk:SecondaryModeling": {
+      "label": "Secondary modeling",
+      "description": "How the secondary system below the distribution transformers is modelled.",
+      "values": [
+        "gk:SecondaryModeling.None",
+        "gk:SecondaryModeling.AggregateLoad",
+        "gk:SecondaryModeling.IndividualCustomers"
+      ]
+    },
+    "gk:GeographicSpecificity": {
+      "label": "Geographic specificity",
+      "description": "The kind of positions in a shipped data file.",
+      "values": [
+        "gk:GeographicSpecificity.LatLong",
+        "gk:GeographicSpecificity.XY",
+        "gk:GeographicSpecificity.None"
+      ]
+    },
+    "gk:ProvenanceLevel": {
+      "label": "Provenance level",
+      "description": "The stoplight level of a component.",
+      "values": [
+        "gk:ProvenanceLevel.Sourced",
+        "gk:ProvenanceLevel.Inferred",
+        "gk:ProvenanceLevel.Missing",
+        "gk:ProvenanceLevel.NotPresent"
+      ]
+    },
+    "gk:Component": {
+      "label": "Component",
+      "description": "A part of a feeder model that gets its own provenance light.",
+      "values": [
+        "gk:Component.Topology",
+        "gk:Component.Conductors",
+        "gk:Component.DistributionTransformers",
+        "gk:Component.SubstationSource",
+        "gk:Component.Loads",
+        "gk:Component.DER",
+        "gk:Component.Protection",
+        "gk:Component.VoltageControl",
+        "gk:Component.Secondary",
+        "gk:Component.Coordinates",
+        "gk:Component.TimeSeries"
+      ]
+    },
+    "gk:Metric": {
+      "label": "Metric",
+      "description": "A DQV metric of the feeder record.",
+      "values": [
+        "gk:Metric.SourcedShare"
+      ]
+    },
+    "gk:Dimension": {
+      "label": "Dimension",
+      "description": "A DQV quality dimension of the feeder record.",
+      "values": [
+        "gk:Dimension.Provenance"
+      ]
+    }
+  },
+  "values": {
+    "gk:ModelClass.Geographic": {
+      "label": "Geographic",
+      "description": "Built from the data of a real feeder.",
+      "scheme": "gk:ModelClass"
+    },
+    "gk:ModelClass.Generic": {
+      "label": "Generic",
+      "description": "A generic model, not of one real feeder.",
+      "scheme": "gk:ModelClass"
+    },
+    "gk:UseCase.Representative": {
+      "label": "Representative",
+      "description": "Represents the feeder in general.",
+      "scheme": "gk:UseCase"
+    },
+    "gk:UseCase.ApplicationSpecific": {
+      "label": "Application-specific",
+      "description": "Built for the applications listed in gk:application.",
+      "scheme": "gk:UseCase"
+    },
+    "gk:Application.Protection": {
+      "label": "Protection",
+      "description": "Protection studies.",
+      "scheme": "gk:Application"
+    },
+    "gk:Application.VoltageManagement": {
+      "label": "Voltage management",
+      "description": "Voltage management studies.",
+      "scheme": "gk:Application"
+    },
+    "gk:Application.DERManagement": {
+      "label": "DER management",
+      "description": "Studies of distributed energy resource management.",
+      "scheme": "gk:Application"
+    },
+    "gk:Application.LoadManagement": {
+      "label": "Load management",
+      "description": "Load management studies.",
+      "scheme": "gk:Application"
+    },
+    "gk:RegionClass.Metropolitan": {
+      "label": "Metropolitan",
+      "description": "The county is in a metropolitan statistical area.",
+      "scheme": "gk:RegionClass"
+    },
+    "gk:RegionClass.Micropolitan": {
+      "label": "Micropolitan",
+      "description": "The county is in a micropolitan statistical area.",
+      "scheme": "gk:RegionClass"
+    },
+    "gk:RegionClass.Outside": {
+      "label": "Outside a CBSA",
+      "description": "The county is in no core-based statistical area.",
+      "scheme": "gk:RegionClass"
+    },
+    "gk:Setting.Urban": {
+      "label": "Urban",
+      "description": "NCES locale City (11, 12, 13).",
+      "scheme": "gk:Setting"
+    },
+    "gk:Setting.Suburban": {
+      "label": "Suburban",
+      "description": "NCES locale Suburb (21, 22, 23).",
+      "scheme": "gk:Setting"
+    },
+    "gk:Setting.Rural": {
+      "label": "Rural",
+      "description": "NCES locale Town (31, 32, 33) or Rural Fringe (41).",
+      "scheme": "gk:Setting"
+    },
+    "gk:Setting.DeepRural": {
+      "label": "Deep rural",
+      "description": "NCES locale Rural Distant or Rural Remote (42, 43).",
+      "scheme": "gk:Setting"
+    },
+    "gk:ClimateRegion.HotHumid": {
+      "label": "Hot-humid",
+      "description": "Building America hot-humid climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.HotDry": {
+      "label": "Hot-dry",
+      "description": "Building America hot-dry climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.MixedHumid": {
+      "label": "Mixed-humid",
+      "description": "Building America mixed-humid climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.MixedDry": {
+      "label": "Mixed-dry",
+      "description": "Building America mixed-dry climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.Cold": {
+      "label": "Cold",
+      "description": "Building America cold climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.VeryCold": {
+      "label": "Very cold",
+      "description": "Building America very cold climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.Subarctic": {
+      "label": "Subarctic",
+      "description": "Building America subarctic climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:ClimateRegion.Marine": {
+      "label": "Marine",
+      "description": "Building America marine climate region.",
+      "scheme": "gk:ClimateRegion"
+    },
+    "gk:Connection.Delta": {
+      "label": "Delta",
+      "description": "Delta connection.",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.Wye": {
+      "label": "Wye",
+      "description": "Ungrounded wye connection.",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.WyeGrounded": {
+      "label": "Grounded wye",
+      "description": "Grounded wye connection.",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.CenterTap": {
+      "label": "Center-tapped",
+      "description": "Single-phase center-tapped (split-phase) secondary.",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.OpenDelta": {
+      "label": "Open delta",
+      "description": "Open delta connection (a bank of two units).",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.OpenWye": {
+      "label": "Open wye",
+      "description": "Open wye connection (a bank of two units).",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.Zigzag": {
+      "label": "Zigzag",
+      "description": "Zigzag (interconnected star) connection, grounded or not.",
+      "scheme": "gk:Connection"
+    },
+    "gk:Connection.SinglePhase": {
+      "label": "Single-phase",
+      "description": "A single-phase winding that is not a center-tapped secondary.",
+      "scheme": "gk:Connection"
+    },
+    "gk:SecondaryModeling.None": {
+      "label": "None",
+      "description": "The loads are on the primary; no distribution transformers or secondaries.",
+      "scheme": "gk:SecondaryModeling"
+    },
+    "gk:SecondaryModeling.AggregateLoad": {
+      "label": "Aggregate load",
+      "description": "One load per distribution transformer.",
+      "scheme": "gk:SecondaryModeling"
+    },
+    "gk:SecondaryModeling.IndividualCustomers": {
+      "label": "Individual customers",
+      "description": "One load per customer.",
+      "scheme": "gk:SecondaryModeling"
+    },
+    "gk:GeographicSpecificity.LatLong": {
+      "label": "Latitude and longitude",
+      "description": "Positions in a WGS84 coordinate system (EPSG:4326).",
+      "scheme": "gk:GeographicSpecificity"
+    },
+    "gk:GeographicSpecificity.XY": {
+      "label": "XY layout",
+      "description": "Positions in any other coordinate system, including a generated layout.",
+      "scheme": "gk:GeographicSpecificity"
+    },
+    "gk:GeographicSpecificity.None": {
+      "label": "None",
+      "description": "The data file has no positions.",
+      "scheme": "gk:GeographicSpecificity"
+    },
+    "gk:ProvenanceLevel.Sourced": {
+      "label": "From source data",
+      "description": "At least 80% of the component's objects have all key parameters from the source data.",
+      "scheme": "gk:ProvenanceLevel"
+    },
+    "gk:ProvenanceLevel.Inferred": {
+      "label": "Inferred",
+      "description": "Less than 80% of the component's objects have all key parameters from the source data, or the values were perturbed for privacy.",
+      "scheme": "gk:ProvenanceLevel"
+    },
+    "gk:ProvenanceLevel.Missing": {
+      "label": "Missing",
+      "description": "The component exists in the real feeder, but the source has no data for it.",
+      "scheme": "gk:ProvenanceLevel"
+    },
+    "gk:ProvenanceLevel.NotPresent": {
+      "label": "None on this feeder",
+      "description": "The source confirms that the feeder has none of the component.",
+      "scheme": "gk:ProvenanceLevel"
+    },
+    "gk:Component.Topology": {
+      "label": "Topology",
+      "description": "Counted by line segment and switch. Key parameters: connectivity, phasing.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.Conductors": {
+      "label": "Conductors",
+      "description": "Counted by line segment. Key parameters: conductor type, impedance or spacing.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.DistributionTransformers": {
+      "label": "Distribution transformers",
+      "description": "Counted by transformer. Key parameters: kVA, connection or secondary voltage, impedance.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.SubstationSource": {
+      "label": "Substation source",
+      "description": "Counted by source and substation transformer. Key parameters: source impedance, transformer rating, LTC settings.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.Loads": {
+      "label": "Loads",
+      "description": "Counted by load. Key parameters: location, kW and kVAr.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.DER": {
+      "label": "DER",
+      "description": "Counted by distributed generator. Key parameters: location, rating, type.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.Protection": {
+      "label": "Protection",
+      "description": "Counted by fuse, recloser and sectionalizer. Key parameters: location, type, rating.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.VoltageControl": {
+      "label": "Voltage control",
+      "description": "Counted by regulator bank and capacitor bank. Key parameters: location, rating, control settings.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.Secondary": {
+      "label": "Secondary",
+      "description": "Counted by service or secondary conductor. Key parameters: presence, conductor.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.Coordinates": {
+      "label": "Coordinates",
+      "description": "Counted by connectivity node. Key parameter: coordinate.",
+      "scheme": "gk:Component"
+    },
+    "gk:Component.TimeSeries": {
+      "label": "Time series",
+      "description": "Counted by load and DG profile. Key parameter: profile.",
+      "scheme": "gk:Component"
+    },
+    "gk:Metric.SourcedShare": {
+      "label": "Sourced share",
+      "description": "Share of a component's objects whose key parameters all come from the source data, from 0 to 1.",
+      "scheme": "gk:Metric"
+    },
+    "gk:Dimension.Provenance": {
+      "label": "Provenance",
+      "description": "Whether the values of a model come from the source data or were inferred.",
+      "scheme": "gk:Dimension"
+    }
+  }
+}

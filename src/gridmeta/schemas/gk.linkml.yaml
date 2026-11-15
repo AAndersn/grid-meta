@@ -1,0 +1,723 @@
+id: https://gridkitchen.pnnl.gov/ns/gk
+name: gk
+title: Grid Kitchen vocabulary
+description: >-
+  Properties and enumerations that describe one published distribution feeder model: the feeder
+  record (Grid Kitchen publishing contract, interface B, section 4). Source of truth for the
+  generated JSON-LD context, Turtle vocabulary, vocabulary.json, JSON Schema and pydantic models;
+  regenerate them with codegen.sh and never edit them by hand.
+license: BSD-3-Clause
+version: 0.1.0
+
+# Every prefix except linkml is written, in this order, into the inline JSON-LD context. spdx,
+# adms, prov, foaf, skos and org are not used by the record itself; the publisher's data file
+# header and manifest use them (contract 5.2, 5.3 and 13.6).
+prefixes:
+  linkml: https://w3id.org/linkml/
+  gk: https://gridkitchen.pnnl.gov/ns/gk#
+  dqv: http://www.w3.org/ns/dqv#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  spdx: http://spdx.org/rdf/terms#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  adms: http://www.w3.org/ns/adms#
+  prov: http://www.w3.org/ns/prov#
+  foaf: http://xmlns.com/foaf/0.1/
+  skos: http://www.w3.org/2004/02/skos/core#
+  org: http://www.w3.org/ns/org#
+default_prefix: gk
+default_range: string
+imports:
+  - linkml:types
+
+# Conventions read by codegen/generate.py:
+# - Enumeration values become the compact IRIs gk:<Enumeration>.<value>.
+# - annotations.based_on names the gk:Component whose provenance light applies to a property.
+# - unit.symbol is the unit symbol; unit.exact_mappings holds the QUDT unit IRI.
+# - Permissible-value annotations whose key is a compact IRI become extra triples in gk.ttl.
+# - Slots are listed in the order of the JSON-LD context.
+
+slots:
+  vocabularyVersion:
+    title: Vocabulary version
+    description: The version of the Grid Kitchen vocabulary the record uses.
+    equals_string: 0.1.0
+  modelClass:
+    title: Model class
+    description: Whether the model is built from a real feeder's data or is a generic model.
+    range: ModelClass
+  useCase:
+    title: Use case
+    description: Whether the model represents a feeder in general or was built for given applications.
+    range: UseCase
+  application:
+    title: Application
+    description: >-
+      The applications the model was built for. Present only when the use case is
+      ApplicationSpecific.
+    range: Application
+    multivalued: true
+  state:
+    title: State
+    description: USPS code of the state of the feeder head.
+    pattern: "^[A-Z]{2}$"
+  regionClass:
+    title: Region class
+    description: >-
+      Census CBSA type of the county that holds the customer-weighted majority of the service
+      points.
+    range: RegionClass
+  setting:
+    title: Setting
+    description: >-
+      NCES locale of the service points, as the customer-weighted majority. Ties go to the earlier
+      value in scheme order.
+    range: Setting
+  settingShares:
+    title: Setting shares
+    description: Share of customers in each setting, in scheme order, with zero shares left out.
+    range: SettingShare
+    multivalued: true
+    inlined_as_list: true
+    list_elements_ordered: true
+  share:
+    title: Share
+    description: A fraction from 0 to 1.
+    range: decimal
+    minimum_value: 0
+    maximum_value: 1
+    unit:
+      symbol: "1"
+      exact_mappings: [http://qudt.org/vocab/unit/FRACTION]
+  climateRegion:
+    title: Climate region
+    description: >-
+      DOE Building America climate region of the county that holds the customer-weighted majority
+      of the service points.
+    range: ClimateRegion
+  primaryVoltage:
+    title: Primary voltage
+    description: Line-to-line nominal voltage of the feeder head.
+    range: decimal
+    minimum_value: 0
+    unit:
+      symbol: kV
+      exact_mappings: [http://qudt.org/vocab/unit/KiloV]
+    annotations:
+      based_on: Topology
+  voltageClass:
+    title: Voltage class
+    description: The smallest of the classes 5, 15, 25 and 35 kV at or above the primary voltage.
+    range: decimal
+    any_of:
+      - equals_number: 5
+      - equals_number: 15
+      - equals_number: 25
+      - equals_number: 35
+    unit:
+      symbol: kV
+      exact_mappings: [http://qudt.org/vocab/unit/KiloV]
+    annotations:
+      based_on: Topology
+  hvConnection:
+    title: HV connection
+    description: >-
+      Winding connection of the high side of the substation transformer. Left out when that
+      transformer is not modelled.
+    range: Connection
+    annotations:
+      based_on: SubstationSource
+  mvConnection:
+    title: MV connection
+    description: >-
+      Winding connection of the low side of the substation transformer, otherwise the connection
+      of the source.
+    range: Connection
+    annotations:
+      based_on: SubstationSource
+  lvConnection:
+    title: LV connection
+    description: The most common secondary connection of the distribution transformers, by count.
+    range: Connection
+    annotations:
+      based_on: DistributionTransformers
+  feederLength:
+    title: Feeder length
+    description: Total length of the line segments at the primary voltage.
+    range: decimal
+    minimum_value: 0
+    unit:
+      symbol: km
+      exact_mappings: [http://qudt.org/vocab/unit/KiloM]
+    annotations:
+      based_on: Topology
+  undergroundShare:
+    title: Underground share
+    description: Underground share of the feeder length.
+    range: decimal
+    minimum_value: 0
+    maximum_value: 1
+    unit:
+      symbol: "1"
+      exact_mappings: [http://qudt.org/vocab/unit/FRACTION]
+    annotations:
+      based_on: Conductors
+  loadCount:
+    title: Loads
+    description: Number of loads (EnergyConsumer).
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Loads
+  customerCount:
+    title: Customers
+    description: Sum of the customer counts of the loads.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Loads
+  loadSizeDistribution:
+    title: Load size distribution
+    description: Share of loads in each size bin, by real power. Left out when there are no loads.
+    range: SizeBin
+    multivalued: true
+    inlined_as_list: true
+    list_elements_ordered: true
+    minimum_cardinality: 5
+    maximum_cardinality: 5
+    unit:
+      symbol: kW
+      exact_mappings: [http://qudt.org/vocab/unit/KiloW]
+    annotations:
+      based_on: Loads
+  dgSizeDistribution:
+    title: DG size distribution
+    description: >-
+      Share of distributed generators in each size bin, by rated apparent power. Left out when
+      there are no distributed generators.
+    range: SizeBin
+    multivalued: true
+    inlined_as_list: true
+    list_elements_ordered: true
+    minimum_cardinality: 5
+    maximum_cardinality: 5
+    unit:
+      symbol: kVA
+      exact_mappings: [http://qudt.org/vocab/unit/KiloV-A]
+    annotations:
+      based_on: DER
+  lowerBound:
+    title: Lower bound
+    description: Inclusive lower bound of a size bin, in the unit of its distribution.
+    range: decimal
+    minimum_value: 0
+  upperBound:
+    title: Upper bound
+    description: >-
+      Exclusive upper bound of a size bin, in the unit of its distribution. The last bin has none.
+    range: decimal
+    minimum_value: 0
+  dgCount:
+    title: Distributed generators
+    description: >-
+      Number of distributed generators (PowerElectronicsConnection and SynchronousMachine),
+      excluding the source.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: DER
+  dgCapacityAC:
+    title: DG capacity (AC)
+    description: Sum of the rated apparent power of the distributed generators.
+    range: decimal
+    minimum_value: 0
+    unit:
+      symbol: kVA
+      exact_mappings: [http://qudt.org/vocab/unit/KiloV-A]
+    annotations:
+      based_on: DER
+  evCount:
+    title: Electric vehicles
+    description: Number of electric vehicles. Present only when the source has EV data.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Loads
+  fuseCount:
+    title: Fuses
+    description: Number of fuses.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Protection
+  recloserCount:
+    title: Reclosers
+    description: Number of reclosers, including the feeder head device.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Protection
+  sectionalizerCount:
+    title: Sectionalizers
+    description: Number of sectionalizers.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: Protection
+  substationLTC:
+    title: Substation LTC
+    description: Whether there is a load tap changer on the substation transformer or at the feeder head.
+    range: boolean
+    annotations:
+      based_on: VoltageControl
+  regulatorCount:
+    title: Regulators
+    description: >-
+      Number of line regulator banks, not single-phase units. The substation LTC is not counted.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: VoltageControl
+  capacitorCount:
+    title: Capacitors
+    description: Number of capacitor banks, not single-phase units.
+    range: integer
+    minimum_value: 0
+    annotations:
+      based_on: VoltageControl
+  secondaryModeling:
+    title: Secondary modeling
+    description: How the secondary system below the distribution transformers is modelled.
+    range: SecondaryModeling
+    annotations:
+      based_on: Secondary
+  lowVoltageNetwork:
+    title: Low-voltage network
+    description: Whether a meshed secondary network is present.
+    range: boolean
+    annotations:
+      based_on: Secondary
+  geographicSpecificity:
+    title: Geographic specificity
+    description: The kind of positions in the shipped data file.
+    range: GeographicSpecificity
+    annotations:
+      based_on: Coordinates
+  multiFeederCompatible:
+    title: Multi-feeder compatible
+    description: >-
+      Whether the shared substation objects have the same identifiers in every sibling feeder
+      package, so that sibling models can be joined.
+    range: boolean
+    annotations:
+      based_on: Topology
+  siblingGroup:
+    title: Sibling group
+    description: >-
+      Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with
+      the same group are siblings. Set by the publisher, not part of the feeder record.
+    annotations:
+      jsonld_type: xsd:string
+  contentHash:
+    title: Content hash
+    description: >-
+      SHA-256 of the shipped payload files, which decides between a MINOR and a PATCH version.
+      Set by the publisher, not part of the feeder record.
+    pattern: "^[0-9a-f]{64}$"
+    annotations:
+      jsonld_type: xsd:string
+  component:
+    title: Component
+    description: The model component a quality measurement is about.
+    range: Component
+  provenanceLevel:
+    title: Provenance level
+    description: The stoplight level of a component.
+    range: ProvenanceLevel
+  archiveKey:
+    title: Archive key
+    description: Object key of a shipped archive in the model bucket. Used in catalog distributions.
+    annotations:
+      # A no-op for JSON-LD (plain strings are already xsd:string), kept because the contract's
+      # gk-context.jsonld example has it.
+      jsonld_type: xsd:string
+  hasQualityMeasurement:
+    slot_uri: dqv:hasQualityMeasurement
+    title: Quality measurements
+    description: One provenance measurement per component.
+    range: QualityMeasurement
+    multivalued: true
+    inlined_as_list: true
+    minimum_cardinality: 11
+    maximum_cardinality: 11
+  isMeasurementOf:
+    slot_uri: dqv:isMeasurementOf
+    title: Metric
+    description: The metric a quality measurement measures.
+    range: Metric
+  value:
+    slot_uri: dqv:value
+    title: Value
+    description: >-
+      The sourced share of a component, (objects - inferred) / objects, rounded to 2 decimals. Left
+      out when the component has no objects.
+    range: decimal
+    minimum_value: 0
+    maximum_value: 1
+  comment:
+    slot_uri: rdfs:comment
+    title: Comment
+    description: The notes of the measurement, joined with "; ".
+  type:
+    slot_uri: http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+    description: The JSON-LD @type of the object.
+    designates_type: true
+    range: uriorcurie
+
+classes:
+  FeederRecord:
+    tree_root: true
+    title: Feeder record
+    description: >-
+      Every property of one feeder that can be computed from its feeder package. A property is
+      left out when its value is unknown; zero means a confirmed zero.
+    slots:
+      - vocabularyVersion
+      - modelClass
+      - useCase
+      - application
+      - state
+      - regionClass
+      - setting
+      - settingShares
+      - climateRegion
+      - primaryVoltage
+      - voltageClass
+      - hvConnection
+      - mvConnection
+      - lvConnection
+      - feederLength
+      - undergroundShare
+      - loadCount
+      - customerCount
+      - loadSizeDistribution
+      - dgCount
+      - dgCapacityAC
+      - dgSizeDistribution
+      - evCount
+      - fuseCount
+      - recloserCount
+      - sectionalizerCount
+      - substationLTC
+      - regulatorCount
+      - capacitorCount
+      - secondaryModeling
+      - lowVoltageNetwork
+      - geographicSpecificity
+      - multiFeederCompatible
+      - hasQualityMeasurement
+    slot_usage:
+      vocabularyVersion:
+        required: true
+      modelClass:
+        required: true
+      useCase:
+        required: true
+      state:
+        required: true
+      geographicSpecificity:
+        required: true
+      multiFeederCompatible:
+        required: true
+      hasQualityMeasurement:
+        required: true
+
+  SettingShare:
+    title: Setting share
+    description: The share of customers in one setting.
+    slots:
+      - setting
+      - share
+    slot_usage:
+      setting:
+        required: true
+      share:
+        required: true
+
+  SizeBin:
+    title: Size bin
+    description: >-
+      One half-open size bin [lowerBound, upperBound) and the share of objects in it. The bins are
+      [0, 5), [5, 50), [50, 500), [500, 5000) and [5000, ∞).
+    slots:
+      - lowerBound
+      - upperBound
+      - share
+    slot_usage:
+      lowerBound:
+        required: true
+      share:
+        required: true
+
+  QualityMeasurement:
+    class_uri: dqv:QualityMeasurement
+    title: Quality measurement
+    description: The provenance stoplight of one component (W3C DQV).
+    slots:
+      - type
+      - isMeasurementOf
+      - component
+      - value
+      - provenanceLevel
+      - comment
+    slot_usage:
+      type:
+        required: true
+      isMeasurementOf:
+        required: true
+      component:
+        required: true
+      provenanceLevel:
+        required: true
+
+enums:
+  ModelClass:
+    title: Model class
+    description: Whether a model is built from a real feeder's data.
+    permissible_values:
+      Geographic:
+        title: Geographic
+        description: Built from the data of a real feeder.
+      Generic:
+        title: Generic
+        description: A generic model, not of one real feeder.
+
+  UseCase:
+    title: Use case
+    description: What a model was built for.
+    permissible_values:
+      Representative:
+        title: Representative
+        description: Represents the feeder in general.
+      ApplicationSpecific:
+        title: Application-specific
+        description: Built for the applications listed in gk:application.
+
+  Application:
+    title: Application
+    description: An application a model was built for.
+    permissible_values:
+      Protection:
+        title: Protection
+        description: Protection studies.
+      VoltageManagement:
+        title: Voltage management
+        description: Voltage management studies.
+      DERManagement:
+        title: DER management
+        description: Studies of distributed energy resource management.
+      LoadManagement:
+        title: Load management
+        description: Load management studies.
+
+  RegionClass:
+    title: Region class
+    description: Census core-based statistical area (CBSA) type of a county.
+    permissible_values:
+      Metropolitan:
+        title: Metropolitan
+        description: The county is in a metropolitan statistical area.
+      Micropolitan:
+        title: Micropolitan
+        description: The county is in a micropolitan statistical area.
+      Outside:
+        title: Outside a CBSA
+        description: The county is in no core-based statistical area.
+
+  Setting:
+    title: Setting
+    description: Settlement type, from the NCES EDGE locale of a service point.
+    permissible_values:
+      Urban:
+        title: Urban
+        description: NCES locale City (11, 12, 13).
+      Suburban:
+        title: Suburban
+        description: NCES locale Suburb (21, 22, 23).
+      Rural:
+        title: Rural
+        description: NCES locale Town (31, 32, 33) or Rural Fringe (41).
+      DeepRural:
+        title: Deep rural
+        description: NCES locale Rural Distant or Rural Remote (42, 43).
+
+  ClimateRegion:
+    title: Climate region
+    description: DOE Building America climate region.
+    permissible_values:
+      HotHumid:
+        title: Hot-humid
+        description: Building America hot-humid climate region.
+      HotDry:
+        title: Hot-dry
+        description: Building America hot-dry climate region.
+      MixedHumid:
+        title: Mixed-humid
+        description: Building America mixed-humid climate region.
+      MixedDry:
+        title: Mixed-dry
+        description: Building America mixed-dry climate region.
+      Cold:
+        title: Cold
+        description: Building America cold climate region.
+      VeryCold:
+        title: Very cold
+        description: Building America very cold climate region.
+      Subarctic:
+        title: Subarctic
+        description: Building America subarctic climate region.
+      Marine:
+        title: Marine
+        description: Building America marine climate region.
+
+  Connection:
+    title: Connection
+    description: Winding connection of a transformer or source.
+    permissible_values:
+      Delta:
+        title: Delta
+        description: Delta connection.
+      Wye:
+        title: Wye
+        description: Ungrounded wye connection.
+      WyeGrounded:
+        title: Grounded wye
+        description: Grounded wye connection.
+      CenterTap:
+        title: Center-tapped
+        description: Single-phase center-tapped (split-phase) secondary.
+      OpenDelta:
+        title: Open delta
+        description: Open delta connection (a bank of two units).
+      OpenWye:
+        title: Open wye
+        description: Open wye connection (a bank of two units).
+      Zigzag:
+        title: Zigzag
+        description: Zigzag (interconnected star) connection, grounded or not.
+      SinglePhase:
+        title: Single-phase
+        description: A single-phase winding that is not a center-tapped secondary.
+
+  SecondaryModeling:
+    title: Secondary modeling
+    description: How the secondary system below the distribution transformers is modelled.
+    permissible_values:
+      None:
+        title: None
+        description: The loads are on the primary; no distribution transformers or secondaries.
+      AggregateLoad:
+        title: Aggregate load
+        description: One load per distribution transformer.
+      IndividualCustomers:
+        title: Individual customers
+        description: One load per customer.
+
+  GeographicSpecificity:
+    title: Geographic specificity
+    description: The kind of positions in a shipped data file.
+    permissible_values:
+      LatLong:
+        title: Latitude and longitude
+        description: Positions in a WGS84 coordinate system (EPSG:4326).
+      XY:
+        title: XY layout
+        description: Positions in any other coordinate system, including a generated layout.
+      None:
+        title: None
+        description: The data file has no positions.
+
+  ProvenanceLevel:
+    title: Provenance level
+    description: The stoplight level of a component.
+    permissible_values:
+      Sourced:
+        title: From source data
+        description: At least 80% of the component's objects have all key parameters from the source data.
+      Inferred:
+        title: Inferred
+        description: >-
+          Less than 80% of the component's objects have all key parameters from the source data,
+          or the values were perturbed for privacy.
+      Missing:
+        title: Missing
+        description: The component exists in the real feeder, but the source has no data for it.
+      NotPresent:
+        title: None on this feeder
+        description: The source confirms that the feeder has none of the component.
+
+  Component:
+    title: Component
+    description: A part of a feeder model that gets its own provenance light.
+    permissible_values:
+      Topology:
+        title: Topology
+        description: "Counted by line segment and switch. Key parameters: connectivity, phasing."
+      Conductors:
+        title: Conductors
+        description: "Counted by line segment. Key parameters: conductor type, impedance or spacing."
+      DistributionTransformers:
+        title: Distribution transformers
+        description: >-
+          Counted by transformer. Key parameters: kVA, connection or secondary voltage, impedance.
+      SubstationSource:
+        title: Substation source
+        description: >-
+          Counted by source and substation transformer. Key parameters: source impedance,
+          transformer rating, LTC settings.
+      Loads:
+        title: Loads
+        description: "Counted by load. Key parameters: location, kW and kVAr."
+      DER:
+        title: DER
+        description: "Counted by distributed generator. Key parameters: location, rating, type."
+      Protection:
+        title: Protection
+        description: "Counted by fuse, recloser and sectionalizer. Key parameters: location, type, rating."
+      VoltageControl:
+        title: Voltage control
+        description: >-
+          Counted by regulator bank and capacitor bank. Key parameters: location, rating, control
+          settings.
+      Secondary:
+        title: Secondary
+        description: "Counted by service or secondary conductor. Key parameters: presence, conductor."
+      Coordinates:
+        title: Coordinates
+        description: "Counted by connectivity node. Key parameter: coordinate."
+      TimeSeries:
+        title: Time series
+        description: "Counted by load and DG profile. Key parameter: profile."
+
+  Metric:
+    title: Metric
+    description: A DQV metric of the feeder record.
+    permissible_values:
+      SourcedShare:
+        title: Sourced share
+        description: >-
+          Share of a component's objects whose key parameters all come from the source data,
+          from 0 to 1.
+        annotations:
+          rdf:type: dqv:Metric
+          dqv:inDimension: gk:Dimension.Provenance
+          dqv:expectedDataType: xsd:decimal
+
+  Dimension:
+    title: Dimension
+    description: A DQV quality dimension of the feeder record.
+    permissible_values:
+      Provenance:
+        title: Provenance
+        description: Whether the values of a model come from the source data or were inferred.
+        annotations:
+          rdf:type: dqv:Dimension

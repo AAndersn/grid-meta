@@ -1,0 +1,100 @@
+{
+  "contract_version": "0.1.2",
+  "components": {
+    "Topology": {
+      "objects": 1690,
+      "inferred": 0,
+      "missing": false,
+      "notes": [
+        "spans and devices from GIS; devices placed by their leaders"
+      ]
+    },
+    "Conductors": {
+      "objects": 1510,
+      "inferred": 965,
+      "missing": false,
+      "notes": [
+        "conductor type from GIS",
+        "default 40 ft pole where the pole height is blank"
+      ]
+    },
+    "DistributionTransformers": {
+      "objects": 690,
+      "inferred": 330,
+      "missing": false,
+      "notes": [
+        "kVA from GIS",
+        "secondary voltage inferred from kVA and node",
+        "%Z: median of valid tanks where GIS has 0"
+      ]
+    },
+    "SubstationSource": {
+      "objects": 1,
+      "inferred": 1,
+      "missing": false,
+      "notes": [
+        "typical source impedance"
+      ]
+    },
+    "Loads": {
+      "objects": 1740,
+      "inferred": 1740,
+      "missing": false,
+      "notes": [
+        "locations from GIS meters",
+        "kW: each transformer at 30% of nameplate kVA, split over its meters, pf 0.9"
+      ]
+    },
+    "DER": {
+      "objects": 74,
+      "inferred": 2,
+      "missing": false,
+      "notes": [
+        "ratings from GIS",
+        "2 blank sizes set to the median of their kind"
+      ]
+    },
+    "Protection": {
+      "objects": 173,
+      "inferred": 13,
+      "missing": false,
+      "notes": [
+        "locations from GIS",
+        "13 fuses without a rating"
+      ]
+    },
+    "VoltageControl": {
+      "objects": 5,
+      "inferred": 2,
+      "missing": false,
+      "notes": [
+        "capacitor kVAr from GIS",
+        "regulator control settings assumed: 122.5 V +- 2.5 V"
+      ]
+    },
+    "Secondary": {
+      "objects": 0,
+      "inferred": 0,
+      "missing": true,
+      "notes": [
+        "secondary conductors are not in the GIS export"
+      ]
+    },
+    "Coordinates": {
+      "objects": 4980,
+      "inferred": 0,
+      "missing": false,
+      "notes": [
+        "node coordinates from GIS"
+      ]
+    },
+    "TimeSeries": {
+      "objects": 0,
+      "inferred": 0,
+      "missing": true,
+      "notes": [
+        "no load or DER profiles in the source"
+      ]
+    }
+  }
+}

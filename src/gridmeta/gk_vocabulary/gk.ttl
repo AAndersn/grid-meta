@@ -1,0 +1,762 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dqv: <http://www.w3.org/ns/dqv#> .
+@prefix gk: <https://gridkitchen.pnnl.gov/ns/gk#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+gk:Application.DERManagement a skos:Concept ;
+    skos:definition "Studies of distributed energy resource management."@en ;
+    skos:inScheme gk:Application ;
+    skos:notation "DERManagement" ;
+    skos:prefLabel "DER management"@en ;
+    skos:topConceptOf gk:Application .
+
+gk:Application.LoadManagement a skos:Concept ;
+    skos:definition "Load management studies."@en ;
+    skos:inScheme gk:Application ;
+    skos:notation "LoadManagement" ;
+    skos:prefLabel "Load management"@en ;
+    skos:topConceptOf gk:Application .
+
+gk:Application.Protection a skos:Concept ;
+    skos:definition "Protection studies."@en ;
+    skos:inScheme gk:Application ;
+    skos:notation "Protection" ;
+    skos:prefLabel "Protection"@en ;
+    skos:topConceptOf gk:Application .
+
+gk:Application.VoltageManagement a skos:Concept ;
+    skos:definition "Voltage management studies."@en ;
+    skos:inScheme gk:Application ;
+    skos:notation "VoltageManagement" ;
+    skos:prefLabel "Voltage management"@en ;
+    skos:topConceptOf gk:Application .
+
+gk:ClimateRegion.Cold a skos:Concept ;
+    skos:definition "Building America cold climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "Cold" ;
+    skos:prefLabel "Cold"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.HotDry a skos:Concept ;
+    skos:definition "Building America hot-dry climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "HotDry" ;
+    skos:prefLabel "Hot-dry"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.HotHumid a skos:Concept ;
+    skos:definition "Building America hot-humid climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "HotHumid" ;
+    skos:prefLabel "Hot-humid"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.Marine a skos:Concept ;
+    skos:definition "Building America marine climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "Marine" ;
+    skos:prefLabel "Marine"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.MixedDry a skos:Concept ;
+    skos:definition "Building America mixed-dry climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "MixedDry" ;
+    skos:prefLabel "Mixed-dry"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.MixedHumid a skos:Concept ;
+    skos:definition "Building America mixed-humid climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "MixedHumid" ;
+    skos:prefLabel "Mixed-humid"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.Subarctic a skos:Concept ;
+    skos:definition "Building America subarctic climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "Subarctic" ;
+    skos:prefLabel "Subarctic"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:ClimateRegion.VeryCold a skos:Concept ;
+    skos:definition "Building America very cold climate region."@en ;
+    skos:inScheme gk:ClimateRegion ;
+    skos:notation "VeryCold" ;
+    skos:prefLabel "Very cold"@en ;
+    skos:topConceptOf gk:ClimateRegion .
+
+gk:Component.TimeSeries a skos:Concept ;
+    skos:definition "Counted by load and DG profile. Key parameter: profile."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "TimeSeries" ;
+    skos:prefLabel "Time series"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Connection.CenterTap a skos:Concept ;
+    skos:definition "Single-phase center-tapped (split-phase) secondary."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "CenterTap" ;
+    skos:prefLabel "Center-tapped"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.Delta a skos:Concept ;
+    skos:definition "Delta connection."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "Delta" ;
+    skos:prefLabel "Delta"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.OpenDelta a skos:Concept ;
+    skos:definition "Open delta connection (a bank of two units)."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "OpenDelta" ;
+    skos:prefLabel "Open delta"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.OpenWye a skos:Concept ;
+    skos:definition "Open wye connection (a bank of two units)."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "OpenWye" ;
+    skos:prefLabel "Open wye"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.SinglePhase a skos:Concept ;
+    skos:definition "A single-phase winding that is not a center-tapped secondary."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "SinglePhase" ;
+    skos:prefLabel "Single-phase"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.Wye a skos:Concept ;
+    skos:definition "Ungrounded wye connection."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "Wye" ;
+    skos:prefLabel "Wye"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.WyeGrounded a skos:Concept ;
+    skos:definition "Grounded wye connection."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "WyeGrounded" ;
+    skos:prefLabel "Grounded wye"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:Connection.Zigzag a skos:Concept ;
+    skos:definition "Zigzag (interconnected star) connection, grounded or not."@en ;
+    skos:inScheme gk:Connection ;
+    skos:notation "Zigzag" ;
+    skos:prefLabel "Zigzag"@en ;
+    skos:topConceptOf gk:Connection .
+
+gk:FeederRecord a owl:Class ;
+    rdfs:label "Feeder record"@en ;
+    rdfs:comment "Every property of one feeder that can be computed from its feeder package. A property is left out when its value is unknown; zero means a confirmed zero."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> .
+
+gk:GeographicSpecificity.LatLong a skos:Concept ;
+    skos:definition "Positions in a WGS84 coordinate system (EPSG:4326)."@en ;
+    skos:inScheme gk:GeographicSpecificity ;
+    skos:notation "LatLong" ;
+    skos:prefLabel "Latitude and longitude"@en ;
+    skos:topConceptOf gk:GeographicSpecificity .
+
+gk:GeographicSpecificity.None a skos:Concept ;
+    skos:definition "The data file has no positions."@en ;
+    skos:inScheme gk:GeographicSpecificity ;
+    skos:notation "None" ;
+    skos:prefLabel "None"@en ;
+    skos:topConceptOf gk:GeographicSpecificity .
+
+gk:GeographicSpecificity.XY a skos:Concept ;
+    skos:definition "Positions in any other coordinate system, including a generated layout."@en ;
+    skos:inScheme gk:GeographicSpecificity ;
+    skos:notation "XY" ;
+    skos:prefLabel "XY layout"@en ;
+    skos:topConceptOf gk:GeographicSpecificity .
+
+gk:Metric.SourcedShare a skos:Concept,
+        dqv:Metric ;
+    skos:definition "Share of a component's objects whose key parameters all come from the source data, from 0 to 1."@en ;
+    skos:inScheme gk:Metric ;
+    skos:notation "SourcedShare" ;
+    skos:prefLabel "Sourced share"@en ;
+    skos:topConceptOf gk:Metric ;
+    dqv:expectedDataType xsd:decimal ;
+    dqv:inDimension gk:Dimension.Provenance .
+
+gk:ModelClass.Generic a skos:Concept ;
+    skos:definition "A generic model, not of one real feeder."@en ;
+    skos:inScheme gk:ModelClass ;
+    skos:notation "Generic" ;
+    skos:prefLabel "Generic"@en ;
+    skos:topConceptOf gk:ModelClass .
+
+gk:ModelClass.Geographic a skos:Concept ;
+    skos:definition "Built from the data of a real feeder."@en ;
+    skos:inScheme gk:ModelClass ;
+    skos:notation "Geographic" ;
+    skos:prefLabel "Geographic"@en ;
+    skos:topConceptOf gk:ModelClass .
+
+gk:ProvenanceLevel.Inferred a skos:Concept ;
+    skos:definition "Less than 80% of the component's objects have all key parameters from the source data, or the values were perturbed for privacy."@en ;
+    skos:inScheme gk:ProvenanceLevel ;
+    skos:notation "Inferred" ;
+    skos:prefLabel "Inferred"@en ;
+    skos:topConceptOf gk:ProvenanceLevel .
+
+gk:ProvenanceLevel.Missing a skos:Concept ;
+    skos:definition "The component exists in the real feeder, but the source has no data for it."@en ;
+    skos:inScheme gk:ProvenanceLevel ;
+    skos:notation "Missing" ;
+    skos:prefLabel "Missing"@en ;
+    skos:topConceptOf gk:ProvenanceLevel .
+
+gk:ProvenanceLevel.NotPresent a skos:Concept ;
+    skos:definition "The source confirms that the feeder has none of the component."@en ;
+    skos:inScheme gk:ProvenanceLevel ;
+    skos:notation "NotPresent" ;
+    skos:prefLabel "None on this feeder"@en ;
+    skos:topConceptOf gk:ProvenanceLevel .
+
+gk:ProvenanceLevel.Sourced a skos:Concept ;
+    skos:definition "At least 80% of the component's objects have all key parameters from the source data."@en ;
+    skos:inScheme gk:ProvenanceLevel ;
+    skos:notation "Sourced" ;
+    skos:prefLabel "From source data"@en ;
+    skos:topConceptOf gk:ProvenanceLevel .
+
+gk:RegionClass.Metropolitan a skos:Concept ;
+    skos:definition "The county is in a metropolitan statistical area."@en ;
+    skos:inScheme gk:RegionClass ;
+    skos:notation "Metropolitan" ;
+    skos:prefLabel "Metropolitan"@en ;
+    skos:topConceptOf gk:RegionClass .
+
+gk:RegionClass.Micropolitan a skos:Concept ;
+    skos:definition "The county is in a micropolitan statistical area."@en ;
+    skos:inScheme gk:RegionClass ;
+    skos:notation "Micropolitan" ;
+    skos:prefLabel "Micropolitan"@en ;
+    skos:topConceptOf gk:RegionClass .
+
+gk:RegionClass.Outside a skos:Concept ;
+    skos:definition "The county is in no core-based statistical area."@en ;
+    skos:inScheme gk:RegionClass ;
+    skos:notation "Outside" ;
+    skos:prefLabel "Outside a CBSA"@en ;
+    skos:topConceptOf gk:RegionClass .
+
+gk:SecondaryModeling.AggregateLoad a skos:Concept ;
+    skos:definition "One load per distribution transformer."@en ;
+    skos:inScheme gk:SecondaryModeling ;
+    skos:notation "AggregateLoad" ;
+    skos:prefLabel "Aggregate load"@en ;
+    skos:topConceptOf gk:SecondaryModeling .
+
+gk:SecondaryModeling.IndividualCustomers a skos:Concept ;
+    skos:definition "One load per customer."@en ;
+    skos:inScheme gk:SecondaryModeling ;
+    skos:notation "IndividualCustomers" ;
+    skos:prefLabel "Individual customers"@en ;
+    skos:topConceptOf gk:SecondaryModeling .
+
+gk:SecondaryModeling.None a skos:Concept ;
+    skos:definition "The loads are on the primary; no distribution transformers or secondaries."@en ;
+    skos:inScheme gk:SecondaryModeling ;
+    skos:notation "None" ;
+    skos:prefLabel "None"@en ;
+    skos:topConceptOf gk:SecondaryModeling .
+
+gk:Setting.DeepRural a skos:Concept ;
+    skos:definition "NCES locale Rural Distant or Rural Remote (42, 43)."@en ;
+    skos:inScheme gk:Setting ;
+    skos:notation "DeepRural" ;
+    skos:prefLabel "Deep rural"@en ;
+    skos:topConceptOf gk:Setting .
+
+gk:Setting.Rural a skos:Concept ;
+    skos:definition "NCES locale Town (31, 32, 33) or Rural Fringe (41)."@en ;
+    skos:inScheme gk:Setting ;
+    skos:notation "Rural" ;
+    skos:prefLabel "Rural"@en ;
+    skos:topConceptOf gk:Setting .
+
+gk:Setting.Suburban a skos:Concept ;
+    skos:definition "NCES locale Suburb (21, 22, 23)."@en ;
+    skos:inScheme gk:Setting ;
+    skos:notation "Suburban" ;
+    skos:prefLabel "Suburban"@en ;
+    skos:topConceptOf gk:Setting .
+
+gk:Setting.Urban a skos:Concept ;
+    skos:definition "NCES locale City (11, 12, 13)."@en ;
+    skos:inScheme gk:Setting ;
+    skos:notation "Urban" ;
+    skos:prefLabel "Urban"@en ;
+    skos:topConceptOf gk:Setting .
+
+gk:UseCase.ApplicationSpecific a skos:Concept ;
+    skos:definition "Built for the applications listed in gk:application."@en ;
+    skos:inScheme gk:UseCase ;
+    skos:notation "ApplicationSpecific" ;
+    skos:prefLabel "Application-specific"@en ;
+    skos:topConceptOf gk:UseCase .
+
+gk:UseCase.Representative a skos:Concept ;
+    skos:definition "Represents the feeder in general."@en ;
+    skos:inScheme gk:UseCase ;
+    skos:notation "Representative" ;
+    skos:prefLabel "Representative"@en ;
+    skos:topConceptOf gk:UseCase .
+
+gk:application a owl:ObjectProperty ;
+    rdfs:label "Application"@en ;
+    rdfs:comment "The applications the model was built for. Present only when the use case is ApplicationSpecific."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:archiveKey a owl:DatatypeProperty ;
+    rdfs:label "Archive key"@en ;
+    rdfs:comment "Object key of a shipped archive in the model bucket. Used in catalog distributions."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:string .
+
+gk:basedOn a owl:AnnotationProperty ;
+    rdfs:label "Based on"@en ;
+    rdfs:comment "The component whose provenance light applies to the property."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:capacitorCount a owl:DatatypeProperty ;
+    rdfs:label "Capacitors"@en ;
+    rdfs:comment "Number of capacitor banks, not single-phase units."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.VoltageControl .
+
+gk:climateRegion a owl:ObjectProperty ;
+    rdfs:label "Climate region"@en ;
+    rdfs:comment "DOE Building America climate region of the county that holds the customer-weighted majority of the service points."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:component a owl:ObjectProperty ;
+    rdfs:label "Component"@en ;
+    rdfs:comment "The model component a quality measurement is about."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:contentHash a owl:DatatypeProperty ;
+    rdfs:label "Content hash"@en ;
+    rdfs:comment "SHA-256 of the shipped payload files, which decides between a MINOR and a PATCH version. Set by the publisher, not part of the feeder record."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:string .
+
+gk:customerCount a owl:DatatypeProperty ;
+    rdfs:label "Customers"@en ;
+    rdfs:comment "Sum of the customer counts of the loads."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Loads .
+
+gk:dgCapacityAC a owl:DatatypeProperty ;
+    rdfs:label "DG capacity (AC)"@en ;
+    qudt:hasUnit unit:KiloV-A ;
+    rdfs:comment "Sum of the rated apparent power of the distributed generators."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal ;
+    gk:basedOn gk:Component.DER .
+
+gk:dgCount a owl:DatatypeProperty ;
+    rdfs:label "Distributed generators"@en ;
+    rdfs:comment "Number of distributed generators (PowerElectronicsConnection and SynchronousMachine), excluding the source."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.DER .
+
+gk:dgSizeDistribution a owl:ObjectProperty ;
+    rdfs:label "DG size distribution"@en ;
+    qudt:hasUnit unit:KiloV-A ;
+    rdfs:comment "Share of distributed generators in each size bin, by rated apparent power. Left out when there are no distributed generators."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range gk:SizeBin ;
+    gk:basedOn gk:Component.DER .
+
+gk:evCount a owl:DatatypeProperty ;
+    rdfs:label "Electric vehicles"@en ;
+    rdfs:comment "Number of electric vehicles. Present only when the source has EV data."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Loads .
+
+gk:feederLength a owl:DatatypeProperty ;
+    rdfs:label "Feeder length"@en ;
+    qudt:hasUnit unit:KiloM ;
+    rdfs:comment "Total length of the line segments at the primary voltage."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal ;
+    gk:basedOn gk:Component.Topology .
+
+gk:fuseCount a owl:DatatypeProperty ;
+    rdfs:label "Fuses"@en ;
+    rdfs:comment "Number of fuses."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Protection .
+
+gk:geographicSpecificity a owl:ObjectProperty ;
+    rdfs:label "Geographic specificity"@en ;
+    rdfs:comment "The kind of positions in the shipped data file."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept ;
+    gk:basedOn gk:Component.Coordinates .
+
+gk:hvConnection a owl:ObjectProperty ;
+    rdfs:label "HV connection"@en ;
+    rdfs:comment "Winding connection of the high side of the substation transformer. Left out when that transformer is not modelled."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept ;
+    gk:basedOn gk:Component.SubstationSource .
+
+gk:loadCount a owl:DatatypeProperty ;
+    rdfs:label "Loads"@en ;
+    rdfs:comment "Number of loads (EnergyConsumer)."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Loads .
+
+gk:loadSizeDistribution a owl:ObjectProperty ;
+    rdfs:label "Load size distribution"@en ;
+    qudt:hasUnit unit:KiloW ;
+    rdfs:comment "Share of loads in each size bin, by real power. Left out when there are no loads."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range gk:SizeBin ;
+    gk:basedOn gk:Component.Loads .
+
+gk:lowVoltageNetwork a owl:DatatypeProperty ;
+    rdfs:label "Low-voltage network"@en ;
+    rdfs:comment "Whether a meshed secondary network is present."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:boolean ;
+    gk:basedOn gk:Component.Secondary .
+
+gk:lowerBound a owl:DatatypeProperty ;
+    rdfs:label "Lower bound"@en ;
+    rdfs:comment "Inclusive lower bound of a size bin, in the unit of its distribution."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal .
+
+gk:lvConnection a owl:ObjectProperty ;
+    rdfs:label "LV connection"@en ;
+    rdfs:comment "The most common secondary connection of the distribution transformers, by count."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept ;
+    gk:basedOn gk:Component.DistributionTransformers .
+
+gk:modelClass a owl:ObjectProperty ;
+    rdfs:label "Model class"@en ;
+    rdfs:comment "Whether the model is built from a real feeder's data or is a generic model."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:multiFeederCompatible a owl:DatatypeProperty ;
+    rdfs:label "Multi-feeder compatible"@en ;
+    rdfs:comment "Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:boolean ;
+    gk:basedOn gk:Component.Topology .
+
+gk:mvConnection a owl:ObjectProperty ;
+    rdfs:label "MV connection"@en ;
+    rdfs:comment "Winding connection of the low side of the substation transformer, otherwise the connection of the source."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept ;
+    gk:basedOn gk:Component.SubstationSource .
+
+gk:primaryVoltage a owl:DatatypeProperty ;
+    rdfs:label "Primary voltage"@en ;
+    qudt:hasUnit unit:KiloV ;
+    rdfs:comment "Line-to-line nominal voltage of the feeder head."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal ;
+    gk:basedOn gk:Component.Topology .
+
+gk:provenanceLevel a owl:ObjectProperty ;
+    rdfs:label "Provenance level"@en ;
+    rdfs:comment "The stoplight level of a component."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:recloserCount a owl:DatatypeProperty ;
+    rdfs:label "Reclosers"@en ;
+    rdfs:comment "Number of reclosers, including the feeder head device."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Protection .
+
+gk:regionClass a owl:ObjectProperty ;
+    rdfs:label "Region class"@en ;
+    rdfs:comment "Census CBSA type of the county that holds the customer-weighted majority of the service points."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:regulatorCount a owl:DatatypeProperty ;
+    rdfs:label "Regulators"@en ;
+    rdfs:comment "Number of line regulator banks, not single-phase units. The substation LTC is not counted."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.VoltageControl .
+
+gk:secondaryModeling a owl:ObjectProperty ;
+    rdfs:label "Secondary modeling"@en ;
+    rdfs:comment "How the secondary system below the distribution transformers is modelled."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept ;
+    gk:basedOn gk:Component.Secondary .
+
+gk:sectionalizerCount a owl:DatatypeProperty ;
+    rdfs:label "Sectionalizers"@en ;
+    rdfs:comment "Number of sectionalizers."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:integer ;
+    gk:basedOn gk:Component.Protection .
+
+gk:setting a owl:ObjectProperty ;
+    rdfs:label "Setting"@en ;
+    rdfs:comment "NCES locale of the service points, as the customer-weighted majority. Ties go to the earlier value in scheme order."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:settingShares a owl:ObjectProperty ;
+    rdfs:label "Setting shares"@en ;
+    rdfs:comment "Share of customers in each setting, in scheme order, with zero shares left out."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range gk:SettingShare .
+
+gk:share a owl:DatatypeProperty ;
+    rdfs:label "Share"@en ;
+    qudt:hasUnit unit:FRACTION ;
+    rdfs:comment "A fraction from 0 to 1."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal .
+
+gk:siblingGroup a owl:DatatypeProperty ;
+    rdfs:label "Sibling group"@en ;
+    rdfs:comment "Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with the same group are siblings. Set by the publisher, not part of the feeder record."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:string .
+
+gk:state a owl:DatatypeProperty ;
+    rdfs:label "State"@en ;
+    rdfs:comment "USPS code of the state of the feeder head."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:string .
+
+gk:substationLTC a owl:DatatypeProperty ;
+    rdfs:label "Substation LTC"@en ;
+    rdfs:comment "Whether there is a load tap changer on the substation transformer or at the feeder head."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:boolean ;
+    gk:basedOn gk:Component.VoltageControl .
+
+gk:undergroundShare a owl:DatatypeProperty ;
+    rdfs:label "Underground share"@en ;
+    qudt:hasUnit unit:FRACTION ;
+    rdfs:comment "Underground share of the feeder length."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal ;
+    gk:basedOn gk:Component.Conductors .
+
+gk:upperBound a owl:DatatypeProperty ;
+    rdfs:label "Upper bound"@en ;
+    rdfs:comment "Exclusive upper bound of a size bin, in the unit of its distribution. The last bin has none."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal .
+
+gk:useCase a owl:ObjectProperty ;
+    rdfs:label "Use case"@en ;
+    rdfs:comment "Whether the model represents a feeder in general or was built for given applications."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range skos:Concept .
+
+gk:vocabularyVersion a owl:DatatypeProperty ;
+    rdfs:label "Vocabulary version"@en ;
+    rdfs:comment "The version of the Grid Kitchen vocabulary the record uses."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:string .
+
+gk:voltageClass a owl:DatatypeProperty ;
+    rdfs:label "Voltage class"@en ;
+    qudt:hasUnit unit:KiloV ;
+    rdfs:comment "The smallest of the classes 5, 15, 25 and 35 kV at or above the primary voltage."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    rdfs:range xsd:decimal ;
+    gk:basedOn gk:Component.Topology .
+
+gk:Component.Conductors a skos:Concept ;
+    skos:definition "Counted by line segment. Key parameters: conductor type, impedance or spacing."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Conductors" ;
+    skos:prefLabel "Conductors"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.Coordinates a skos:Concept ;
+    skos:definition "Counted by connectivity node. Key parameter: coordinate."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Coordinates" ;
+    skos:prefLabel "Coordinates"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.DistributionTransformers a skos:Concept ;
+    skos:definition "Counted by transformer. Key parameters: kVA, connection or secondary voltage, impedance."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "DistributionTransformers" ;
+    skos:prefLabel "Distribution transformers"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Dimension.Provenance a skos:Concept,
+        dqv:Dimension ;
+    skos:definition "Whether the values of a model come from the source data or were inferred."@en ;
+    skos:inScheme gk:Dimension ;
+    skos:notation "Provenance" ;
+    skos:prefLabel "Provenance"@en ;
+    skos:topConceptOf gk:Dimension .
+
+gk:SettingShare a owl:Class ;
+    rdfs:label "Setting share"@en ;
+    rdfs:comment "The share of customers in one setting."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> .
+
+gk:Component.Secondary a skos:Concept ;
+    skos:definition "Counted by service or secondary conductor. Key parameters: presence, conductor."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Secondary" ;
+    skos:prefLabel "Secondary"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.SubstationSource a skos:Concept ;
+    skos:definition "Counted by source and substation transformer. Key parameters: source impedance, transformer rating, LTC settings."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "SubstationSource" ;
+    skos:prefLabel "Substation source"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Dimension a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "A DQV quality dimension of the feeder record."@en ;
+    skos:prefLabel "Dimension"@en .
+
+gk:Metric a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "A DQV metric of the feeder record."@en ;
+    skos:prefLabel "Metric"@en .
+
+gk:SizeBin a owl:Class ;
+    rdfs:label "Size bin"@en ;
+    rdfs:comment "One half-open size bin [lowerBound, upperBound) and the share of objects in it. The bins are [0, 5), [5, 50), [50, 500), [500, 5000) and [5000, ∞)."@en ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> .
+
+gk:Component.DER a skos:Concept ;
+    skos:definition "Counted by distributed generator. Key parameters: location, rating, type."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "DER" ;
+    skos:prefLabel "DER"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.Protection a skos:Concept ;
+    skos:definition "Counted by fuse, recloser and sectionalizer. Key parameters: location, type, rating."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Protection" ;
+    skos:prefLabel "Protection"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.VoltageControl a skos:Concept ;
+    skos:definition "Counted by regulator bank and capacitor bank. Key parameters: location, rating, control settings."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "VoltageControl" ;
+    skos:prefLabel "Voltage control"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.Loads a skos:Concept ;
+    skos:definition "Counted by load. Key parameters: location, kW and kVAr."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Loads" ;
+    skos:prefLabel "Loads"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:Component.Topology a skos:Concept ;
+    skos:definition "Counted by line segment and switch. Key parameters: connectivity, phasing."@en ;
+    skos:inScheme gk:Component ;
+    skos:notation "Topology" ;
+    skos:prefLabel "Topology"@en ;
+    skos:topConceptOf gk:Component .
+
+gk:ModelClass a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "Whether a model is built from a real feeder's data."@en ;
+    skos:prefLabel "Model class"@en .
+
+gk:UseCase a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "What a model was built for."@en ;
+    skos:prefLabel "Use case"@en .
+
+gk:GeographicSpecificity a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "The kind of positions in a shipped data file."@en ;
+    skos:prefLabel "Geographic specificity"@en .
+
+gk:RegionClass a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "Census core-based statistical area (CBSA) type of a county."@en ;
+    skos:prefLabel "Region class"@en .
+
+gk:SecondaryModeling a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "How the secondary system below the distribution transformers is modelled."@en ;
+    skos:prefLabel "Secondary modeling"@en .
+
+gk:Application a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "An application a model was built for."@en ;
+    skos:prefLabel "Application"@en .
+
+gk:ProvenanceLevel a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "The stoplight level of a component."@en ;
+    skos:prefLabel "Provenance level"@en .
+
+gk:Setting a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "Settlement type, from the NCES EDGE locale of a service point."@en ;
+    skos:prefLabel "Setting"@en .
+
+gk:ClimateRegion a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "DOE Building America climate region."@en ;
+    skos:prefLabel "Climate region"@en .
+
+gk:Connection a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "Winding connection of a transformer or source."@en ;
+    skos:prefLabel "Connection"@en .
+
+gk:Component a skos:ConceptScheme ;
+    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
+    skos:definition "A part of a feeder model that gets its own provenance light."@en ;
+    skos:prefLabel "Component"@en .
+
+<https://gridkitchen.pnnl.gov/ns/gk> a owl:Ontology ;
+    dct:description "Properties and enumerations that describe one published distribution feeder model: the feeder record (Grid Kitchen publishing contract, interface B, section 4). Source of truth for the generated JSON-LD context, Turtle vocabulary, vocabulary.json, JSON Schema and pydantic models; regenerate them with codegen.sh and never edit them by hand."@en ;
+    dct:license <https://spdx.org/licenses/BSD-3-Clause.html> ;
+    dct:title "Grid Kitchen vocabulary"@en ;
+    owl:versionInfo "0.1.0" .
+
