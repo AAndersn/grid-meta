@@ -8,7 +8,13 @@ import pytest
 import yaml
 
 from generate import GK_SCHEMA, PACKAGE_SCHEMA
-from gridmeta.package import load_provenance, load_sanitize, load_source, load_verify
+from gridmeta.package import (
+    OPTIONAL_VERIFY_COUNTS,
+    load_provenance,
+    load_sanitize,
+    load_source,
+    load_verify,
+)
 
 CONTRACT_DIR = Path(__file__).parent / "data" / "contract"
 SANITIZE = {
@@ -82,7 +88,7 @@ def test_inferred_above_objects_is_rejected(tmp_path):
     [
         ({"use_case": "ApplicationSpecific"}, "applications"),
         ({"applications": ["Protection"]}, "applications"),
-        ({"contract_version": "0.1.2"}, "contract_version"),
+        ({"contract_version": "0.2.7"}, "contract_version"),
         ({"state": "Vermont"}, "state"),
         ({"model_class": "Synthetic"}, "model_class"),
         ({"forbidden_strings": []}, "forbidden_strings"),
@@ -100,27 +106,28 @@ def test_application_specific_source_loads(tmp_path):
     assert load_source(path).applications == ["Protection"]
 
 
-def test_high_leg_nodes_is_optional_and_zero_when_absent(tmp_path):
-    assert load_verify(CONTRACT_DIR / "verify.json").high_leg_nodes == 0
+@pytest.mark.parametrize("field", OPTIONAL_VERIFY_COUNTS)
+def test_optional_count_is_zero_when_absent(tmp_path, field):
+    assert getattr(load_verify(CONTRACT_DIR / "verify.json"), field) == 0
     verify = read_example("verify.json")
-    del verify["high_leg_nodes"]
-    assert load_verify(write_json(tmp_path / "verify.json", verify)).high_leg_nodes == 0
-    verify["high_leg_nodes"] = 3
-    assert load_verify(write_json(tmp_path / "verify.json", verify)).high_leg_nodes == 3
+    del verify[field]
+    assert getattr(load_verify(write_json(tmp_path / "verify.json", verify)), field) == 0
+    verify[field] = 3
+    assert getattr(load_verify(write_json(tmp_path / "verify.json", verify)), field) == 3
 
 
 @pytest.mark.parametrize("value", [-1, None, 1.5, "two"])
-def test_invalid_high_leg_nodes_is_rejected(tmp_path, value):
-    change = {"high_leg_nodes": value}
-    path = write_json(tmp_path / "verify.json", read_example("verify.json") | change)
-    with pytest.raises(ValueError, match=r"verify\.json: high_leg_nodes"):
+@pytest.mark.parametrize("field", OPTIONAL_VERIFY_COUNTS)
+def test_invalid_optional_count_is_rejected(tmp_path, field, value):
+    path = write_json(tmp_path / "verify.json", read_example("verify.json") | {field: value})
+    with pytest.raises(ValueError, match=rf"verify\.json: {field}"):
         load_verify(path)
 
 
-def test_null_high_leg_nodes_names_the_rule(tmp_path):
-    change = {"high_leg_nodes": None}
-    path = write_json(tmp_path / "verify.json", read_example("verify.json") | change)
-    with pytest.raises(ValueError, match=r"verify\.json: high_leg_nodes: must be an integer"):
+@pytest.mark.parametrize("field", OPTIONAL_VERIFY_COUNTS)
+def test_null_optional_count_names_the_rule(tmp_path, field):
+    path = write_json(tmp_path / "verify.json", read_example("verify.json") | {field: None})
+    with pytest.raises(ValueError, match=rf"verify\.json: {field}: must be an integer"):
         load_verify(path)
 
 
@@ -130,7 +137,7 @@ def test_unknown_key_is_rejected(tmp_path):
         load_verify(path)
 
 
-@pytest.mark.parametrize("version", ["0.2.0", "0.2.9"])
+@pytest.mark.parametrize("version", ["0.3.0", "0.3.9"])
 def test_same_major_minor_is_accepted(tmp_path, version):
     source = write_json(
         tmp_path / "source.json", read_example("source.json") | {"contract_version": version}
@@ -140,7 +147,7 @@ def test_same_major_minor_is_accepted(tmp_path, version):
     assert load_provenance(write_json(tmp_path / "provenance.json", provenance))
 
 
-@pytest.mark.parametrize("version", ["0.1.2", "0.3.0", "1.2.0"])
+@pytest.mark.parametrize("version", ["0.2.7", "0.4.0", "1.3.0"])
 @pytest.mark.parametrize(
     "name, loader", [("source.json", load_source), ("provenance.json", load_provenance)]
 )
@@ -148,7 +155,7 @@ def test_other_minor_is_refused(tmp_path, name, loader, version):
     path = write_json(tmp_path / name, read_example(name) | {"contract_version": version})
     with pytest.raises(
         ValueError,
-        match=rf"{name}: contract_version is {re.escape(version)}; this gridmeta reads 0\.2\.x",
+        match=rf"{name}: contract_version is {re.escape(version)}; this gridmeta reads 0\.3\.x",
     ):
         loader(path)
 

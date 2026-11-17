@@ -34,15 +34,18 @@
           "@id": "urn:uuid:2d35e852-5b68-5ed0-bfd0-401da8ac5f7c"
         },
         {
-          "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+          "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9"
         },
         {
           "@id": "urn:uuid:74a9a8cc-5eb7-5ed0-ba10-da6671069eba"
+        },
+        {
+          "@id": "urn:uuid:81e5ab73-9865-5b5e-9319-5a8f1057dd81"
         }
       ],
       "cim:FrameModel.perimeter": [
         {
-          "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+          "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9"
         }
       ],
       "dcat:distribution": [
@@ -290,7 +293,7 @@
       ]
     },
     {
-      "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b",
+      "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9",
       "@type": [
         "dcat:Dataset",
         "cim:BoundaryModel"
@@ -304,7 +307,7 @@
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/boundary.cimtbl",
+          "dcat:accessURL": "cimtbl/boundary_VT-0a1b2c3d4e_VT-5e6f7a8b9c.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
@@ -314,7 +317,7 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "2279fef21c188cd4f5681878209646a3431fad2c3ca923bf7fcebc81212a124d"
+            "spdx:checksumValue": "64015c25d5b926f25507740de420b7dde0bd1c8476dccb70a3bad91805d61ef2"
           },
           "dct:conformsTo": [
             {
@@ -360,20 +363,20 @@
       ]
     },
     {
-      "@id": "urn:uuid:0c183e57-154e-57d6-802d-2a573cd60042",
+      "@id": "urn:uuid:81e5ab73-9865-5b5e-9319-5a8f1057dd81",
       "@type": [
         "dcat:Dataset"
       ],
-      "dct:title": "Ties",
+      "dct:title": "Shared objects",
       "dct:requires": [
         {
-          "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+          "@id": "urn:uuid:d52034da-ad28-5309-aafa-bd05c6f0ce58"
         }
       ],
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/ties.cimtbl",
+          "dcat:accessURL": "cimtbl/shared_VT-0a1b2c3d4e_VT-2c3d4e5f6a.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
@@ -383,7 +386,7 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "5dca4e28446e2672854e9a62be672efc8ae28a1b5ef1ae71a7a3ebbe758ebd0b"
+            "spdx:checksumValue": "eb8e408983f1f787a6bbebfed4d95f861c8be444f6274fbce7d8bbbf9a6a6424"
           },
           "dct:conformsTo": [
             {

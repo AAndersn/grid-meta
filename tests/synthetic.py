@@ -194,11 +194,12 @@ class FeederBuilder:
             )
         )
 
-    def shared_areas(self, near_node: str) -> None:
-        """What areas.cimtbl and boundary.cimtbl add to a feeder with a tie (contract 3.5): the
-        distribution area's ConnectedAreas, including those of two other feeders, and the tie's
-        two boundary nodes in the area. The near side is `near_node`; the far side, in the other
-        feeder's package, has no terminal here. ties.cimtbl, not loaded, would hold the tie."""
+    def owned_tie(self, own_node: str):
+        """What a feeder that owns a tie carries (contract 3.5, 0.3.0): from areas.cimtbl, the
+        distribution area's ConnectedAreas, including those of two other feeders; from
+        boundary_<set>.cimtbl, the boundary node "far" in that area; and in its own parts, the
+        normally open tie switch from `own_node` to "far". The other feeder's segment, in its own
+        package, ends on "far", so here the node has only the tie's terminal."""
         area_kind = cim.ConnectedAreaKind
         distribution = self.add(
             cim.ConnectedArea(mRID=self.mrid(), kind=area_kind.distributionArea)
@@ -216,14 +217,11 @@ class FeederBuilder:
                     mRID=self.mrid(), kind=area_kind.feederArea, ContainedWithin=service
                 )
             )
-        self.node(near_node).ConnectivityNodeContainer = distribution
-        self.add(
-            cim.ConnectivityNode(
-                mRID=self.mrid(),
-                name="far",
-                BaseVoltage=self.base_voltage(self.primary_kv),
-                ConnectivityNodeContainer=distribution,
-            )
+        far = self.node("far")
+        far.ConnectivityNodeContainer = distribution
+        far.BaseVoltage = self.base_voltage(self.primary_kv)
+        return self.switch(
+            cim.LoadBreakSwitch, own_node, "far", normalOpen=True, areaBoundary=True
         )
 
     def write(self, path: Path) -> Path:

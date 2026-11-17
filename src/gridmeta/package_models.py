@@ -337,6 +337,7 @@ class Verify(ConfiguredBaseModel):
     total_load_kw: float = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     isolated_buses: int = Field(default=..., ge=0, json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     high_leg_nodes: Optional[int] = Field(default=0, description="""Nodes whose per-unit voltage is taken against the high-leg base of a four-wire delta secondary rather than the bus base (contract 3.3). Absent means 0.""", ge=0, json_schema_extra = { "linkml_meta": {'domain_of': ['Verify'], 'ifabsent': 'int(0)'} })
+    ungrounded_nodes: Optional[int] = Field(default=0, description="""Buses of an ungrounded secondary network, whose voltage is read line to line against the winding's ratedU (contract 3.3). Absent means 0.""", ge=0, json_schema_extra = { "linkml_meta": {'domain_of': ['Verify'], 'ifabsent': 'int(0)'} })
 
 
 class Sanitize(ConfiguredBaseModel):

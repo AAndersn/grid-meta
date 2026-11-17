@@ -232,6 +232,13 @@ classes:
         description: >-
           Nodes whose per-unit voltage is taken against the high-leg base of a four-wire delta
           secondary rather than the bus base (contract 3.3). Absent means 0.
+      ungrounded_nodes:
+        range: integer
+        minimum_value: 0
+        ifabsent: int(0)
+        description: >-
+          Buses of an ungrounded secondary network, whose voltage is read line to line against
+          the winding's ratedU (contract 3.3). Absent means 0.
 
   Sanitize:
     description: sanitize.json, the summary of a grid-reducer sanitise run (3.4).

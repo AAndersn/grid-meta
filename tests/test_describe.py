@@ -161,18 +161,19 @@ def test_sanitised_package_without_positions(tmp_path, reference_dir):
     assert record["gk:secondaryModeling"] == "gk:SecondaryModeling.None"
 
 
-def test_shared_areas_and_boundary_nodes_change_nothing(tmp_path, package, reference_dir):
-    """A feeder with a tie carries its distribution area's ConnectedAreas, other feeders'
-    included, and the far-side boundary node with no terminal (contract 3.5). Neither changes a
-    count or the coordinates rule."""
+def test_owned_tie_and_shared_areas_change_nothing(tmp_path, package, reference_dir):
+    """A feeder that owns a tie carries areas.cimtbl's ConnectedAreas, other feeders' included,
+    a boundary_<set> node, and the open tie switch, whose far side is that boundary node with
+    only the tie's terminal (contract 3.5, 0.3.0). None of it changes a count or the coordinates
+    rule."""
     feeder = example_feeder()
-    feeder.shared_areas(near_node="n2")
+    tie = feeder.owned_tie(own_node="n2")
     tied = write_package(tmp_path / "tied", feeder, EXAMPLE_SERVICE_POINTS)
     network = read_data_file(tied / "VT-0a1b2c3d4e.jsonld")
     assert len(objects(network, cim.ConnectedArea)) == 5
-    assert [
-        node.name for node in objects(network, cim.ConnectivityNode) if not node.Terminals
-    ] == ["far"]
+    (far,) = [node for node in objects(network, cim.ConnectivityNode) if node.name == "far"]
+    assert [terminal.ConductingEquipment.mRID for terminal in far.Terminals] == [tie.mRID]
+    assert isinstance(far.ConnectivityNodeContainer, cim.ConnectedArea)
     assert record_data(tied, reference_dir) == record_data(package, reference_dir)
 
 
