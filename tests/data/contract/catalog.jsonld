@@ -23,6 +23,14 @@
     ]
   },
   "modified": "2026-11-19T17:00:00Z",
+  "datasetSeries": [
+    {
+      "@type": "DatasetSeries",
+      "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e",
+      "title": "Grid Kitchen substation VT-1a2b3c4d5e",
+      "description": "Distribution feeders published from one substation."
+    }
+  ],
   "dataset": [
     {
       "@type": "Dataset",
@@ -48,7 +56,11 @@
       "issued": "2026-11-19T17:00:00Z",
       "modified": "2026-11-19T17:00:00Z",
       "version": "1.0.0",
+      "versionNotes": "First release.",
       "dcat:isVersionOf": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e",
+      "dcat:inSeries": {
+        "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e"
+      },
       "landingPage": {
         "@type": "Document",
         "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e/1.0.0",
@@ -58,8 +70,11 @@
       "keyword": [
         "distribution feeder",
         "power flow model",
-        "OpenDSS",
         "CIM",
+        "CIM XML",
+        "JSON-LD",
+        "cimtbl",
+        "OpenDSS",
         "rural",
         "VT"
       ],
@@ -92,8 +107,13 @@
       "conformsTo": [
         {
           "@type": "Standard",
-          "identifier": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17_distribution/0.2.0/units-si.jsonld",
-          "title": "CIM-Profiles cim18v17_distribution SI units"
+          "identifier": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld",
+          "title": "CIM-Profiles cim18v17 0.2.0"
+        },
+        {
+          "@type": "Standard",
+          "identifier": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld",
+          "title": "CIM-Profiles cim18v17 SI units"
         }
       ],
       "hasQualityMeasurement": [
@@ -255,7 +275,7 @@
       "distribution": [
         {
           "@type": "Distribution",
-          "title": "OpenDSS + CIM JSON-LD archive",
+          "title": "CIM model archive: JSON-LD, CIM XML and .cimtbl, with a notebook",
           "accessURL": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e/1.0.0",
           "mediaType": "application/zip",
           "packageFormat": "application/zip",

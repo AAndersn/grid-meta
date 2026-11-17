@@ -1,6 +1,7 @@
 """Interface A loaders and models."""
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -33,11 +34,15 @@ def write_json(path: Path, data: dict) -> Path:
 def test_examples_load():
     source = load_source(CONTRACT_DIR / "source.json")
     assert source.state == "VT"
-    assert source.pipeline.cim_profiles == "0.2.0a1"
+    assert source.model_scope == "9f8e7d6c5b"
+    assert source.pipeline.tools.cim_profiles == "0.2.0"
+    assert source.pipeline.tools.opendssdirect_py == "0.10.0"
     provenance = load_provenance(CONTRACT_DIR / "provenance.json")
     assert provenance.components.DistributionTransformers.inferred == 330
     assert provenance.components.Secondary.missing
-    assert load_verify(CONTRACT_DIR / "verify.json").status == "PASS"
+    verify = load_verify(CONTRACT_DIR / "verify.json")
+    assert verify.status == "PASS"
+    assert verify.exported_from == "VT-0a1b2c3d4e.jsonld"
 
 
 def test_sanitize_loads(tmp_path):
@@ -77,7 +82,7 @@ def test_inferred_above_objects_is_rejected(tmp_path):
     [
         ({"use_case": "ApplicationSpecific"}, "applications"),
         ({"applications": ["Protection"]}, "applications"),
-        ({"contract_version": "0.2.0"}, "contract_version"),
+        ({"contract_version": "0.1.2"}, "contract_version"),
         ({"state": "Vermont"}, "state"),
         ({"model_class": "Synthetic"}, "model_class"),
         ({"forbidden_strings": []}, "forbidden_strings"),
@@ -95,13 +100,37 @@ def test_application_specific_source_loads(tmp_path):
     assert load_source(path).applications == ["Protection"]
 
 
+def test_high_leg_nodes_is_optional_and_zero_when_absent(tmp_path):
+    assert load_verify(CONTRACT_DIR / "verify.json").high_leg_nodes == 0
+    verify = read_example("verify.json")
+    del verify["high_leg_nodes"]
+    assert load_verify(write_json(tmp_path / "verify.json", verify)).high_leg_nodes == 0
+    verify["high_leg_nodes"] = 3
+    assert load_verify(write_json(tmp_path / "verify.json", verify)).high_leg_nodes == 3
+
+
+@pytest.mark.parametrize("value", [-1, None, 1.5, "two"])
+def test_invalid_high_leg_nodes_is_rejected(tmp_path, value):
+    change = {"high_leg_nodes": value}
+    path = write_json(tmp_path / "verify.json", read_example("verify.json") | change)
+    with pytest.raises(ValueError, match=r"verify\.json: high_leg_nodes"):
+        load_verify(path)
+
+
+def test_null_high_leg_nodes_names_the_rule(tmp_path):
+    change = {"high_leg_nodes": None}
+    path = write_json(tmp_path / "verify.json", read_example("verify.json") | change)
+    with pytest.raises(ValueError, match=r"verify\.json: high_leg_nodes: must be an integer"):
+        load_verify(path)
+
+
 def test_unknown_key_is_rejected(tmp_path):
     path = write_json(tmp_path / "verify.json", read_example("verify.json") | {"vpu_min": 0.9})
     with pytest.raises(ValueError, match=r"verify\.json.*vpu_min"):
         load_verify(path)
 
 
-@pytest.mark.parametrize("version", ["0.1.0", "0.1.9"])
+@pytest.mark.parametrize("version", ["0.2.0", "0.2.9"])
 def test_same_major_minor_is_accepted(tmp_path, version):
     source = write_json(
         tmp_path / "source.json", read_example("source.json") | {"contract_version": version}
@@ -111,12 +140,66 @@ def test_same_major_minor_is_accepted(tmp_path, version):
     assert load_provenance(write_json(tmp_path / "provenance.json", provenance))
 
 
+@pytest.mark.parametrize("version", ["0.1.2", "0.3.0", "1.2.0"])
 @pytest.mark.parametrize(
     "name, loader", [("source.json", load_source), ("provenance.json", load_provenance)]
 )
-def test_other_minor_is_refused(tmp_path, name, loader):
-    path = write_json(tmp_path / name, read_example(name) | {"contract_version": "0.2.0"})
+def test_other_minor_is_refused(tmp_path, name, loader, version):
+    path = write_json(tmp_path / name, read_example(name) | {"contract_version": version})
     with pytest.raises(
-        ValueError, match=rf"{name}: contract_version is 0\.2\.0; this gridmeta reads 0\.1\.x"
+        ValueError,
+        match=rf"{name}: contract_version is {re.escape(version)}; this gridmeta reads 0\.2\.x",
     ):
         loader(path)
+
+
+def pipeline_with(**changes) -> dict:
+    pipeline = read_example("source.json")["pipeline"]
+    return {"pipeline": pipeline | changes}
+
+
+def tools_with(**changes) -> dict:
+    tools = read_example("source.json")["pipeline"]["tools"]
+    return pipeline_with(tools=tools | changes)
+
+
+@pytest.mark.parametrize(
+    "change, field",
+    [
+        (pipeline_with(cim_profiles="0.2.0a1"), "pipeline.cim_profiles"),  # 0.1's field
+        (tools_with(**{"cim-graph": ">=0.6"}), "pipeline.tools.cim-graph"),  # not exact
+        (tools_with(**{"numpy": "2.1.0"}), "pipeline.tools.numpy"),
+    ],
+)
+def test_invalid_pipeline_is_rejected(tmp_path, change, field):
+    path = write_json(tmp_path / "source.json", read_example("source.json") | change)
+    with pytest.raises(ValueError, match=rf"source\.json: {re.escape(field)}"):
+        load_source(path)
+
+
+@pytest.mark.parametrize(
+    "name, field, loader",
+    [
+        ("source.json", "model_scope", load_source),
+        ("source.json", "pipeline.tools", load_source),
+        ("verify.json", "exported_from", load_verify),
+    ],
+)
+def test_missing_0_2_field_is_rejected(tmp_path, name, field, loader):
+    data = read_example(name)
+    *parents, last = field.split(".")
+    parent = data
+    for key in parents:
+        parent = parent[key]
+    del parent[last]
+    path = write_json(tmp_path / name, data)
+    with pytest.raises(ValueError, match=rf"{name}: {re.escape(field)}: Field required"):
+        loader(path)
+
+
+def test_missing_tool_is_rejected(tmp_path):
+    source = read_example("source.json")
+    del source["pipeline"]["tools"]["cimhub-opendss"]
+    path = write_json(tmp_path / "source.json", source)
+    with pytest.raises(ValueError, match=r"source\.json: pipeline\.tools\.cimhub-opendss"):
+        load_source(path)

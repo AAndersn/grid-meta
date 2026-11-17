@@ -1,2 +1,1 @@
-{"status": "PASS", "converged": true, "solver": "OpenDSS (opendssdirect 0.10)", "solved_at": "2026-11-10T21:04:00Z",
- "min_vpu": 0.962, "max_vpu": 1.031, "total_load_kw": 4210.0, "isolated_buses": 0}
+{"status": "PASS", "converged": true, "solver": "opendssdirect.py 0.10.0", "exported_from": "VT-0a1b2c3d4e.jsonld", "solved_at": "2026-11-10T21:04:00Z", "min_vpu": 0.962, "max_vpu": 1.031, "high_leg_nodes": 0, "total_load_kw": 4210.0, "isolated_buses": 0}

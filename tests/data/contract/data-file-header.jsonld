@@ -1,234 +1,33 @@
 {
-  "@context": [
-    "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17_distribution/0.2.0/context.jsonld",
-    "gk-context.jsonld (inlined here in shipped files)"
-  ],
+  "@context": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld",
   "@id": "urn:uuid:7cbe316f-83e1-5cb9-a922-d6d98e531a24",
   "@type": [
     "dcat:Dataset",
     "http://www.w3.org/2004/03/trix/rdfg-1/Graph"
   ],
   "dct:identifier": "7cbe316f-83e1-5cb9-a922-d6d98e531a24",
-  "dct:issued": "2026-11-19T17:00:00Z",
-  "md:Model.modelingAuthoritySet": "https://gridkitchen.pnnl.gov/authority/<utility code>",
   "dct:title": "VT-0a1b2c3d4e",
+  "dct:issued": "2026-11-19T17:00:00Z",
+  "dcat:version": "1.0.0",
+  "dcat:isVersionOf": {
+    "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e"
+  },
+  "dcat:landingPage": {
+    "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e/1.0.0"
+  },
+  "dct:license": {
+    "@id": "https://spdx.org/licenses/BSD-3-Clause.html"
+  },
   "dct:conformsTo": [
-    "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17_distribution/0.2.0/units-si.jsonld"
+    "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld",
+    "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
   ],
   "dcat:distribution": {
     "@type": "dcat:Distribution",
     "dct:conformsTo": [
-      "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17_distribution/0.2.0/units-si.jsonld"
+      "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
     ]
   },
-  "dct:description": "Rural 12.47 kV distribution feeder in VT with 1,740 loads and 74 DGs; individual customers on transformer secondaries.",
-  "dcat:isVersionOf": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e",
-  "dcat:version": "1.0.0",
-  "adms:versionNotes": "First release.",
-  "dct:temporal": {
-    "@type": "dct:PeriodOfTime",
-    "dcat:startDate": "2026-07-21T00:00:00Z"
-  },
-  "dct:publisher": {
-    "@type": "foaf:Organization",
-    "foaf:name": "Pacific Northwest National Laboratory",
-    "org:subOrganizationOf": {
-      "@type": "foaf:Organization",
-      "foaf:name": "U.S. Department of Energy"
-    }
-  },
-  "dct:license": "https://spdx.org/licenses/BSD-3-Clause.html",
-  "dct:rights": "Copyright (c) 2026, Battelle Memorial Institute; All rights reserved.",
-  "dct:accessRights": "public",
-  "dct:spatial": {
-    "@type": "dct:Location",
-    "dct:identifier": "US-VT",
-    "skos:prefLabel": "Vermont"
-  },
-  "prov:wasGeneratedBy": {
-    "@type": "prov:Activity",
-    "rdfs:label": "vec_cim 20261110-example",
-    "gk:pipelineCommit": "0000000000000000000000000000000000000000"
-  },
-  "gk:vocabularyVersion": "0.1.0",
-  "gk:modelClass": "gk:ModelClass.Geographic",
-  "gk:useCase": "gk:UseCase.Representative",
-  "gk:state": "VT",
-  "gk:regionClass": "gk:RegionClass.Metropolitan",
-  "gk:setting": "gk:Setting.Rural",
-  "gk:settingShares": [
-    {
-      "gk:setting": "gk:Setting.Rural",
-      "gk:share": 0.71
-    },
-    {
-      "gk:setting": "gk:Setting.DeepRural",
-      "gk:share": 0.29
-    }
-  ],
-  "gk:climateRegion": "gk:ClimateRegion.Cold",
-  "gk:primaryVoltage": 12.47,
-  "gk:voltageClass": 15,
-  "gk:mvConnection": "gk:Connection.WyeGrounded",
-  "gk:lvConnection": "gk:Connection.CenterTap",
-  "gk:feederLength": 116.8,
-  "gk:undergroundShare": 0.09,
-  "gk:loadCount": 1740,
-  "gk:customerCount": 1740,
-  "gk:loadSizeDistribution": [
-    {
-      "gk:lowerBound": 0,
-      "gk:upperBound": 5,
-      "gk:share": 0.92
-    },
-    {
-      "gk:lowerBound": 5,
-      "gk:upperBound": 50,
-      "gk:share": 0.08
-    },
-    {
-      "gk:lowerBound": 50,
-      "gk:upperBound": 500,
-      "gk:share": 0.0
-    },
-    {
-      "gk:lowerBound": 500,
-      "gk:upperBound": 5000,
-      "gk:share": 0.0
-    },
-    {
-      "gk:lowerBound": 5000,
-      "gk:share": 0.0
-    }
-  ],
-  "gk:dgCount": 74,
-  "gk:dgCapacityAC": 1890.0,
-  "gk:dgSizeDistribution": [
-    {
-      "gk:lowerBound": 0,
-      "gk:upperBound": 5,
-      "gk:share": 0.16
-    },
-    {
-      "gk:lowerBound": 5,
-      "gk:upperBound": 50,
-      "gk:share": 0.8
-    },
-    {
-      "gk:lowerBound": 50,
-      "gk:upperBound": 500,
-      "gk:share": 0.03
-    },
-    {
-      "gk:lowerBound": 500,
-      "gk:upperBound": 5000,
-      "gk:share": 0.01
-    },
-    {
-      "gk:lowerBound": 5000,
-      "gk:share": 0.0
-    }
-  ],
-  "gk:fuseCount": 172,
-  "gk:recloserCount": 1,
-  "gk:sectionalizerCount": 0,
-  "gk:substationLTC": false,
-  "gk:regulatorCount": 2,
-  "gk:capacitorCount": 3,
-  "gk:secondaryModeling": "gk:SecondaryModeling.IndividualCustomers",
-  "gk:lowVoltageNetwork": false,
-  "gk:geographicSpecificity": "gk:GeographicSpecificity.LatLong",
-  "gk:multiFeederCompatible": false,
-  "dqv:hasQualityMeasurement": [
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Topology",
-      "dqv:value": 1.0,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Sourced",
-      "rdfs:comment": "spans and devices from GIS; devices placed by their leaders"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Conductors",
-      "dqv:value": 0.36,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Inferred",
-      "rdfs:comment": "conductor type from GIS; default 40 ft pole where the pole height is blank"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.DistributionTransformers",
-      "dqv:value": 0.52,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Inferred",
-      "rdfs:comment": "kVA from GIS; secondary voltage inferred from kVA and node; %Z: median of valid tanks where GIS has 0"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.SubstationSource",
-      "dqv:value": 0.0,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Inferred",
-      "rdfs:comment": "typical source impedance"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Loads",
-      "dqv:value": 0.0,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Inferred",
-      "rdfs:comment": "locations from GIS meters; kW: each transformer at 30% of nameplate kVA, split over its meters, pf 0.9"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.DER",
-      "dqv:value": 0.97,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Sourced",
-      "rdfs:comment": "ratings from GIS; 2 blank sizes set to the median of their kind"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Protection",
-      "dqv:value": 0.92,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Sourced",
-      "rdfs:comment": "locations from GIS; 13 fuses without a rating"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.VoltageControl",
-      "dqv:value": 0.6,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Inferred",
-      "rdfs:comment": "capacitor kVAr from GIS; regulator control settings assumed: 122.5 V +- 2.5 V"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Secondary",
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Missing",
-      "rdfs:comment": "secondary conductors are not in the GIS export"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.Coordinates",
-      "dqv:value": 1.0,
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Sourced",
-      "rdfs:comment": "node coordinates from GIS"
-    },
-    {
-      "@type": "dqv:QualityMeasurement",
-      "dqv:isMeasurementOf": "gk:Metric.SourcedShare",
-      "gk:component": "gk:Component.TimeSeries",
-      "gk:provenanceLevel": "gk:ProvenanceLevel.Missing",
-      "rdfs:comment": "no load or DER profiles in the source"
-    }
-  ],
-  "gk:contentHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-  "@graph": [
-    "\u2026 CIM objects as written by the pipeline; never edited by the publisher \u2026"
-  ]
+  "md:Model.modelingAuthoritySet": "https://gridkitchen.pnnl.gov/authority/9f8e7d6c5b",
+  "@graph": "… the CIM objects, unchanged …"
 }

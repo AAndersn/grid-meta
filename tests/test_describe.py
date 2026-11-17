@@ -3,12 +3,13 @@
 import json
 from pathlib import Path
 
+import cimprofiles.cim18.cim18v17 as cim
 import pytest
 from click.testing import CliRunner
 
 from gridmeta.cli.cli import cli
 from gridmeta.describe import InvalidPackage, describe, record_json
-from gridmeta.structure import size_distribution
+from gridmeta.structure import objects, read_data_file, size_distribution
 from gridmeta.testing import EXAMPLE_SERVICE_POINTS, write_reference_dir
 from synthetic import CONTRACT_DIR, FeederBuilder, example_feeder, write_json, write_package
 
@@ -158,6 +159,21 @@ def test_sanitised_package_without_positions(tmp_path, reference_dir):
     assert levels["gk:Component.Coordinates"] == "gk:ProvenanceLevel.Missing"
     assert record["gk:geographicSpecificity"] == "gk:GeographicSpecificity.None"
     assert record["gk:secondaryModeling"] == "gk:SecondaryModeling.None"
+
+
+def test_shared_areas_and_boundary_nodes_change_nothing(tmp_path, package, reference_dir):
+    """A feeder with a tie carries its distribution area's ConnectedAreas, other feeders'
+    included, and the far-side boundary node with no terminal (contract 3.5). Neither changes a
+    count or the coordinates rule."""
+    feeder = example_feeder()
+    feeder.shared_areas(near_node="n2")
+    tied = write_package(tmp_path / "tied", feeder, EXAMPLE_SERVICE_POINTS)
+    network = read_data_file(tied / "VT-0a1b2c3d4e.jsonld")
+    assert len(objects(network, cim.ConnectedArea)) == 5
+    assert [
+        node.name for node in objects(network, cim.ConnectivityNode) if not node.Terminals
+    ] == ["far"]
+    assert record_data(tied, reference_dir) == record_data(package, reference_dir)
 
 
 def test_describe_raises_invalid_package(tmp_path, reference_dir):

@@ -104,9 +104,6 @@
     "gk:geographicSpecificity": {
       "@type": "@id"
     },
-    "gk:siblingGroup": {
-      "@type": "xsd:string"
-    },
     "gk:contentHash": {
       "@type": "xsd:string"
     },

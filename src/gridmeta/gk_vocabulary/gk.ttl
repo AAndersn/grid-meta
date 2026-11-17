@@ -548,12 +548,6 @@ gk:share a owl:DatatypeProperty ;
     rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
     rdfs:range xsd:decimal .
 
-gk:siblingGroup a owl:DatatypeProperty ;
-    rdfs:label "Sibling group"@en ;
-    rdfs:comment "Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with the same group are siblings. Set by the publisher, not part of the feeder record."@en ;
-    rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
-    rdfs:range xsd:string .
-
 gk:state a owl:DatatypeProperty ;
     rdfs:label "State"@en ;
     rdfs:comment "USPS code of the state of the feeder head."@en ;

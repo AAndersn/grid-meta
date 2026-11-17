@@ -61,8 +61,8 @@ RECORD_PROPERTIES = [
     "gk:vocabularyVersion",
 ]
 # Contract 4.2: set by the publisher, so in the vocabulary but not in the feeder record.
-PUBLISHER_PROPERTIES = ["gk:siblingGroup", "gk:contentHash"]
-# Contract decision 10.1 and 13.10.
+PUBLISHER_PROPERTIES = ["gk:contentHash"]
+# Contract decision 10.1, 0.1.1 13.10 and 0.2.0 13.6 (dcat:inSeries replaces gk:siblingGroup).
 DROPPED_TERMS = [
     "utilityType",
     "UtilityType",
@@ -70,6 +70,7 @@ DROPPED_TERMS = [
     "region",
     "statcomCount",
     "siblingFeeder",
+    "siblingGroup",
 ]
 ENUMERATIONS = {
     "ModelClass": ["Geographic", "Generic"],

@@ -290,14 +290,6 @@
       "unitIRI": null,
       "component": "gk:Component.Topology"
     },
-    "gk:siblingGroup": {
-      "label": "Sibling group",
-      "description": "Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with the same group are siblings. Set by the publisher, not part of the feeder record.",
-      "range": "xsd:string",
-      "unit": null,
-      "unitIRI": null,
-      "component": null
-    },
     "gk:contentHash": {
       "label": "Content hash",
       "description": "SHA-256 of the shipped payload files, which decides between a MINOR and a PATCH version. Set by the publisher, not part of the feeder record.",

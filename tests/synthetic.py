@@ -1,5 +1,5 @@
 """Synthetic feeder packages for the tests: tiny CIM networks written by CIM-Graph, as a pipeline
-writes them (cim18v17_distribution, SI convention). They hold no real utility data."""
+writes them (cim18v17, SI convention). They hold no real utility data."""
 
 import json
 import os
@@ -7,7 +7,7 @@ import shutil
 from pathlib import Path
 from uuid import UUID
 
-import cimprofiles.cim18.cim18v17_distribution as cim
+import cimprofiles.cim18.cim18v17 as cim
 from cimgraph.core import get_cim_profile
 from cimgraph.models import FeederModel
 from cimgraph.utils import write_json_ld
@@ -19,7 +19,7 @@ WGS84 = "urn:ogc:def:crs:OGC:1.3:CRS84"
 
 
 def use_profile() -> None:
-    os.environ["CIMG_CIM_PROFILE"] = "cim18v17_distribution"
+    os.environ["CIMG_CIM_PROFILE"] = "cim18v17"
     os.environ["CIMG_USE_UNITS"] = "true"
     os.environ["CIMG_MODEL_AUTHORITY"] = AUTHORITY
     os.environ["CIMG_MODEL_NAME"] = ""
@@ -191,6 +191,38 @@ class FeederBuilder:
         self.add(
             cim.PositionPoint(
                 Location=location, xPosition=str(x), yPosition=str(y), sequenceNumber=1
+            )
+        )
+
+    def shared_areas(self, near_node: str) -> None:
+        """What areas.cimtbl and boundary.cimtbl add to a feeder with a tie (contract 3.5): the
+        distribution area's ConnectedAreas, including those of two other feeders, and the tie's
+        two boundary nodes in the area. The near side is `near_node`; the far side, in the other
+        feeder's package, has no terminal here. ties.cimtbl, not loaded, would hold the tie."""
+        area_kind = cim.ConnectedAreaKind
+        distribution = self.add(
+            cim.ConnectedArea(mRID=self.mrid(), kind=area_kind.distributionArea)
+        )
+        service = self.add(
+            cim.ConnectedArea(
+                mRID=self.mrid(),
+                kind=area_kind.substationServiceArea,
+                ContainedWithin=distribution,
+            )
+        )
+        for _feeder in range(3):
+            self.add(
+                cim.ConnectedArea(
+                    mRID=self.mrid(), kind=area_kind.feederArea, ContainedWithin=service
+                )
+            )
+        self.node(near_node).ConnectivityNodeContainer = distribution
+        self.add(
+            cim.ConnectivityNode(
+                mRID=self.mrid(),
+                name="far",
+                BaseVoltage=self.base_voltage(self.primary_kv),
+                ConnectivityNodeContainer=distribution,
             )
         )
 

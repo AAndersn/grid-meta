@@ -52,6 +52,11 @@ classes:
       multi_feeder_compatible:
         range: boolean
         required: true
+      model_scope:
+        required: true
+        description: >-
+          The scope in which the utility's source keys are unique, as the .cimtbl master states
+          it in Model = (contract 2).
       pipeline:
         range: Pipeline
         required: true
@@ -77,9 +82,37 @@ classes:
         pattern: "^[0-9a-f]{40}$"
       run:
         required: true
-      cim_profiles:
+      tools:
+        range: Tools
         required: true
-        description: The cim-profiles version the package was built with.
+        inlined: true
+        description: The exact installed versions of the packages the shipped notebook uses.
+
+  Tools:
+    description: >-
+      The exact installed version (importlib.metadata.version) of each package the shipped
+      notebook pins, keyed by PyPI distribution name (contract 3).
+    attributes:
+      cim_profiles:
+        alias: cim-profiles
+        required: true
+        pattern: "^\\d[0-9A-Za-z.+!-]*$"
+      cim_graph:
+        alias: cim-graph
+        required: true
+        pattern: "^\\d[0-9A-Za-z.+!-]*$"
+      cim_tables:
+        alias: cim-tables
+        required: true
+        pattern: "^\\d[0-9A-Za-z.+!-]*$"
+      cimhub_opendss:
+        alias: cimhub-opendss
+        required: true
+        pattern: "^\\d[0-9A-Za-z.+!-]*$"
+      opendssdirect_py:
+        alias: opendssdirect.py
+        required: true
+        pattern: "^\\d[0-9A-Za-z.+!-]*$"
 
   Provenance:
     description: provenance.json, per-component source and inferred counts (3.2).
@@ -173,6 +206,9 @@ classes:
         required: true
       solver:
         required: true
+      exported_from:
+        required: true
+        description: The data file the solved deck was exported from; the publisher requires <model_id>.jsonld.
       solved_at:
         range: datetime
         required: true
@@ -189,6 +225,13 @@ classes:
         range: integer
         required: true
         minimum_value: 0
+      high_leg_nodes:
+        range: integer
+        minimum_value: 0
+        ifabsent: int(0)
+        description: >-
+          Nodes whose per-unit voltage is taken against the high-leg base of a four-wire delta
+          secondary rather than the bus base (contract 3.3). Absent means 0.
 
   Sanitize:
     description: sanitize.json, the summary of a grid-reducer sanitise run (3.4).

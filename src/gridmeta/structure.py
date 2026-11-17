@@ -1,6 +1,6 @@
 """Structural feeder record properties from the package's CIM data file (contract 4.2).
 
-The data file is read with CIM-Graph's JSONLDFile in the cim18v17_distribution profile. Every
+The data file is read with CIM-Graph's JSONLDFile in the cim18v17 profile. Every
 quantity goes through CIMUnit `.to()`. A property whose value is unknown is left out; a missing
 or invalid input raises ValueError naming the file and the field.
 
@@ -18,13 +18,13 @@ import os
 from collections import Counter
 from pathlib import Path
 
-import cimprofiles.cim18.cim18v17_distribution as cim
+import cimprofiles.cim18.cim18v17 as cim
 from cimgraph.databases import JSONLDFile
 from cimgraph.models import NodeBreakerModel
 
 from gridmeta.rounding import largest_remainder_shares, round_share
 
-PROFILE = "cim18v17_distribution"
+PROFILE = "cim18v17"
 VOLTAGE_CLASSES_KV = (5, 15, 25, 35)
 SIZE_BIN_EDGES = (0, 5, 50, 500, 5000)
 CONNECTION_ORDER = (

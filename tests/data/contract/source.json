@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.2",
+  "contract_version": "0.2.0",
   "utility": {
     "name": "Example Electric Cooperative"
   },
@@ -11,11 +11,18 @@
   "use_case": "Representative",
   "applications": [],
   "multi_feeder_compatible": false,
+  "model_scope": "9f8e7d6c5b",
   "pipeline": {
     "name": "vec_cim",
     "commit": "0000000000000000000000000000000000000000",
     "run": "20261110-example",
-    "cim_profiles": "0.2.0a1"
+    "tools": {
+      "cim-profiles": "0.2.0",
+      "cim-graph": "0.6.1",
+      "cim-tables": "0.2.0a1",
+      "cimhub-opendss": "3.0.0",
+      "opendssdirect.py": "0.10.0"
+    }
   },
   "forbidden_strings": [
     "Example Electric Cooperative",

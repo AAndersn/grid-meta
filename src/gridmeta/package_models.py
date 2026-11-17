@@ -133,6 +133,7 @@ class Source(ConfiguredBaseModel):
     use_case: UseCase = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     applications: list[Application] = Field(default=..., description="""The applications of an ApplicationSpecific model; empty otherwise.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     multi_feeder_compatible: bool = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
+    model_scope: str = Field(default=..., description="""The scope in which the utility's source keys are unique, as the .cimtbl master states it in Model = (contract 2).""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     pipeline: Pipeline = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     forbidden_strings: list[str] = Field(default=..., description="""Every real name that must not appear in a shipped file.""", min_length=1, json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
 
@@ -175,7 +176,7 @@ class Pipeline(ConfiguredBaseModel):
     name: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Utility', 'Pipeline']} })
     commit: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Pipeline']} })
     run: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Pipeline']} })
-    cim_profiles: str = Field(default=..., description="""The cim-profiles version the package was built with.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Pipeline']} })
+    tools: Tools = Field(default=..., description="""The exact installed versions of the packages the shipped notebook uses.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Pipeline']} })
 
     @field_validator('commit')
     def pattern_commit(cls, v):
@@ -187,6 +188,84 @@ class Pipeline(ConfiguredBaseModel):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.match(v):
             err_msg = f"Invalid commit format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+
+class Tools(ConfiguredBaseModel):
+    """
+    The exact installed version (importlib.metadata.version) of each package the shipped notebook pins, keyed by PyPI distribution name (contract 3).
+    """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://gridkitchen.pnnl.gov/ns/gk/package'})
+
+    cim_profiles: str = Field(default=..., alias="cim-profiles", json_schema_extra = { "linkml_meta": {'domain_of': ['Tools']} })
+    cim_graph: str = Field(default=..., alias="cim-graph", json_schema_extra = { "linkml_meta": {'domain_of': ['Tools']} })
+    cim_tables: str = Field(default=..., alias="cim-tables", json_schema_extra = { "linkml_meta": {'domain_of': ['Tools']} })
+    cimhub_opendss: str = Field(default=..., alias="cimhub-opendss", json_schema_extra = { "linkml_meta": {'domain_of': ['Tools']} })
+    opendssdirect_py: str = Field(default=..., alias="opendssdirect.py", json_schema_extra = { "linkml_meta": {'domain_of': ['Tools']} })
+
+    @field_validator('cim_profiles')
+    def pattern_cim_profiles(cls, v):
+        pattern=re.compile(r"^\d[0-9A-Za-z.+!-]*$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid cim_profiles format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid cim_profiles format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('cim_graph')
+    def pattern_cim_graph(cls, v):
+        pattern=re.compile(r"^\d[0-9A-Za-z.+!-]*$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid cim_graph format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid cim_graph format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('cim_tables')
+    def pattern_cim_tables(cls, v):
+        pattern=re.compile(r"^\d[0-9A-Za-z.+!-]*$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid cim_tables format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid cim_tables format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('cimhub_opendss')
+    def pattern_cimhub_opendss(cls, v):
+        pattern=re.compile(r"^\d[0-9A-Za-z.+!-]*$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid cimhub_opendss format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid cimhub_opendss format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('opendssdirect_py')
+    def pattern_opendssdirect_py(cls, v):
+        pattern=re.compile(r"^\d[0-9A-Za-z.+!-]*$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid opendssdirect_py format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid opendssdirect_py format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -251,11 +330,13 @@ class Verify(ConfiguredBaseModel):
     status: VerifyStatus = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     converged: bool = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     solver: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
+    exported_from: str = Field(default=..., description="""The data file the solved deck was exported from; the publisher requires <model_id>.jsonld.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     solved_at: datetime  = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     min_vpu: float = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     max_vpu: float = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     total_load_kw: float = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
     isolated_buses: int = Field(default=..., ge=0, json_schema_extra = { "linkml_meta": {'domain_of': ['Verify']} })
+    high_leg_nodes: Optional[int] = Field(default=0, description="""Nodes whose per-unit voltage is taken against the high-leg base of a four-wire delta secondary rather than the bus base (contract 3.3). Absent means 0.""", ge=0, json_schema_extra = { "linkml_meta": {'domain_of': ['Verify'], 'ifabsent': 'int(0)'} })
 
 
 class Sanitize(ConfiguredBaseModel):
@@ -314,6 +395,7 @@ class NoiseSettings(ConfiguredBaseModel):
 Source.model_rebuild()
 Utility.model_rebuild()
 Pipeline.model_rebuild()
+Tools.model_rebuild()
 Provenance.model_rebuild()
 Components.model_rebuild()
 ComponentProvenance.model_rebuild()

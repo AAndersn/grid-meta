@@ -12,7 +12,7 @@ from pydantic import BaseModel, ValidationError
 
 from gridmeta.package_models import Provenance, Sanitize, Source, Verify
 
-CONTRACT_VERSION = "0.1.2"
+CONTRACT_VERSION = "0.2.0"
 APPLICATION_SPECIFIC = "ApplicationSpecific"
 
 Model = TypeVar("Model", bound=BaseModel)
@@ -85,7 +85,11 @@ def load_provenance(path: Path) -> Provenance:
 
 def load_verify(path: Path) -> Verify:
     """verify.json (3.3). The publisher, not this loader, applies the PASS and voltage gates."""
-    return _validate(path, Verify)
+    verify = _validate(path, Verify)
+    # An absent high_leg_nodes is 0; the generated model also lets an explicit null through.
+    if verify.high_leg_nodes is None:
+        raise ValueError(f"{path}: high_leg_nodes: must be an integer, got null")
+    return verify
 
 
 def load_sanitize(path: Path) -> Sanitize:

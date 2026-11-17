@@ -1,8 +1,8 @@
-"""model_id and sibling_group (contract section 2)."""
+"""model_id, sibling_group and utility_code (contract section 2)."""
 
 import pytest
 
-from gridmeta.identity import model_id, sibling_group
+from gridmeta.identity import model_id, sibling_group, utility_code
 
 NAMES = ("Example Electric Cooperative", "Example Substation", "Example Feeder 1")
 KEY = "gridmeta-test-key"
@@ -59,3 +59,22 @@ def test_sibling_group_is_shared_by_the_substation_feeders():
 def test_invalid_sibling_group_input_is_rejected(state, names, key, message):
     with pytest.raises(ValueError, match=message):
         sibling_group(state, *names, key=key)
+
+
+def test_utility_code_vector():
+    # printf '%s' 'Example Electric Cooperative' \
+    #   | openssl dgst -sha256 -hmac 'gridmeta-test-key'   -> 53b81c8418...
+    assert utility_code(NAMES[0], key=KEY) == "53b81c8418"
+
+
+def test_utility_code_depends_on_key():
+    assert utility_code(NAMES[0], key="another-key") != utility_code(NAMES[0], key=KEY)
+
+
+@pytest.mark.parametrize(
+    "utility, key, message",
+    [("", KEY, "utility_code: utility"), (NAMES[0], "", "GK_MODEL_ID_KEY")],
+)
+def test_invalid_utility_code_input_is_rejected(utility, key, message):
+    with pytest.raises(ValueError, match=message):
+        utility_code(utility, key=key)

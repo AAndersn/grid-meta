@@ -310,13 +310,6 @@ slots:
     range: boolean
     annotations:
       based_on: Topology
-  siblingGroup:
-    title: Sibling group
-    description: >-
-      Keyed identifier of the substation a multi-feeder compatible feeder comes from; feeders with
-      the same group are siblings. Set by the publisher, not part of the feeder record.
-    annotations:
-      jsonld_type: xsd:string
   contentHash:
     title: Content hash
     description: >-

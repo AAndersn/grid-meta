@@ -8,21 +8,25 @@ STATE_CODE = re.compile(r"^[A-Z]{2}$")
 HEX_DIGITS = 10
 
 
-def _keyed_id(caller: str, state: str, names: dict[str, str], key: str) -> str:
-    """`<ST>-<10 hex>`: HMAC-SHA256(key, the names joined with "/"), truncated.
+def _digest(caller: str, names: dict[str, str], key: str) -> str:
+    """The first 10 hex digits of HMAC-SHA256(key, the names joined with "/").
 
-    Key and message are encoded as UTF-8. The same inputs always give the same id.
+    Key and message are encoded as UTF-8. The same inputs always give the same digits.
     """
-    if not STATE_CODE.match(state):
-        raise ValueError(f"{caller}: state must be a two-letter USPS code, got {state!r}")
     for field, name in names.items():
         if not name:
             raise ValueError(f"{caller}: {field} name is empty")
     if not key:
         raise ValueError(f"{caller}: key is empty (set GK_MODEL_ID_KEY)")
     message = "/".join(names.values()).encode("utf-8")
-    digest = hmac.new(key.encode("utf-8"), message, hashlib.sha256).hexdigest()
-    return f"{state}-{digest[:HEX_DIGITS]}"
+    return hmac.new(key.encode("utf-8"), message, hashlib.sha256).hexdigest()[:HEX_DIGITS]
+
+
+def _keyed_id(caller: str, state: str, names: dict[str, str], key: str) -> str:
+    """`<ST>-<10 hex>`, with the digits from _digest."""
+    if not STATE_CODE.match(state):
+        raise ValueError(f"{caller}: state must be a two-letter USPS code, got {state!r}")
+    return f"{state}-{_digest(caller, names, key)}"
 
 
 def model_id(state: str, utility: str, substation: str, feeder: str, key: str) -> str:
@@ -38,8 +42,16 @@ def model_id(state: str, utility: str, substation: str, feeder: str, key: str) -
 def sibling_group(state: str, utility: str, substation: str, key: str) -> str:
     """The substation's sibling group, from HMAC-SHA256(key, "<utility>/<substation>").
 
-    Every feeder of one substation has the same group. The publisher writes it as
-    gk:siblingGroup.
+    Every feeder of one substation has the same group. The publisher names the substation
+    series with it (dcat:inSeries).
     """
     names = {"utility": utility, "substation": substation}
     return _keyed_id("sibling_group", state, names, key)
+
+
+def utility_code(utility: str, key: str) -> str:
+    """The opaque utility code, from HMAC-SHA256(key, "<utility>"): 10 hex digits, no state.
+
+    It stands for the utility in the authority IRI and, by default, as the model scope.
+    """
+    return _digest("utility_code", {"utility": utility}, key)

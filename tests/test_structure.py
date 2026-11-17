@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-import cimprofiles.cim18.cim18v17_distribution as cim
+import cimprofiles.cim18.cim18v17 as cim
 import pytest
 from cimgraph.databases import XMLFile
 from cimgraph.models import NodeBreakerModel
