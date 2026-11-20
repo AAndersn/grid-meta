@@ -16,12 +16,12 @@ from gridmeta.describe import InvalidPackage, describe, record_json
 @click.option(
     "--reference-dir",
     envvar="GRIDMETA_REFERENCE_DIR",
-    required=True,
     type=click.Path(exists=True, file_okay=False, path_type=Path),
     help="Directory of the reference datasets and their SOURCES.toml "
-    "(default: GRIDMETA_REFERENCE_DIR).",
+    "(default: GRIDMETA_REFERENCE_DIR). Not needed for a package without "
+    "private/service_points.csv.",
 )
-def describe_package(package_dir: Path, output: Path | None, reference_dir: Path) -> None:
+def describe_package(package_dir: Path, output: Path | None, reference_dir: Path | None) -> None:
     """Write the feeder record of the feeder package PACKAGE_DIR."""
     try:
         record = describe(package_dir, reference_dir)

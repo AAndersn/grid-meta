@@ -54,8 +54,18 @@ def _collect(problems: list[str], step, *args):
         return None
 
 
-def build_record(package_dir: Path, reference_dir: Path) -> dict:
-    """The feeder record as JSON data, before validation."""
+def _load_reference(reference_dir: Path | None):
+    if reference_dir is None:
+        raise ValueError(
+            "the location properties need the reference datasets: give --reference-dir or "
+            "GRIDMETA_REFERENCE_DIR"
+        )
+    return load_reference(Path(reference_dir))
+
+
+def build_record(package_dir: Path, reference_dir: Path | None) -> dict:
+    """The feeder record as JSON data, before validation. The reference datasets are needed only
+    for a package with private/service_points.csv."""
     package_dir = Path(package_dir)
     problems = []
     source_path = package_dir / "source.json"
@@ -68,11 +78,18 @@ def build_record(package_dir: Path, reference_dir: Path) -> dict:
     sanitize = _collect(problems, load_sanitize, sanitize_path) if sanitize_path.exists() else None
     jsonld_dir = package_dir / "jsonld"
     structure = _collect(problems, structural_properties, jsonld_dir, package_dir.name)
-    reference = _collect(problems, load_reference, Path(reference_dir))
-    location = None
-    if reference is not None:
-        service_points = package_dir / "private" / "service_points.csv"
-        location = _collect(problems, location_properties, service_points, reference)
+    service_points = package_dir / "private" / "service_points.csv"
+    no_positions = structure is not None and structure["gk:geographicSpecificity"] == NO_POSITIONS
+    location = {}
+    if service_points.exists():
+        reference = _collect(problems, _load_reference, reference_dir)
+        if reference is not None:
+            location = _collect(problems, location_properties, service_points, reference)
+    elif sanitize_path.exists() or not no_positions:
+        problems.append(
+            f"{service_points}: file is missing; only a package whose data files have no "
+            "positions, and with no sanitize.json, may leave it out"
+        )
     if problems:
         raise InvalidPackage("\n".join(problems))
 
@@ -99,7 +116,7 @@ def build_record(package_dir: Path, reference_dir: Path) -> dict:
     return record
 
 
-def describe(package_dir: Path, reference_dir: Path) -> FeederRecord:
+def describe(package_dir: Path, reference_dir: Path | None) -> FeederRecord:
     """The feeder record of one package, validated against the generated JSON Schema."""
     record = build_record(package_dir, reference_dir)
     jsonschema.Draft202012Validator(record_json_schema()).validate(record)

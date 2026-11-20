@@ -2,7 +2,8 @@
 
 `gridmeta describe --reference-dir DIR` (or `GRIDMETA_REFERENCE_DIR`) reads the datasets below
 to derive `gk:setting`, `gk:settingShares`, `gk:regionClass` and `gk:climateRegion` from a
-package's `private/service_points.csv` (publishing contract 4.5). The files in this directory of
+package's `private/service_points.csv` (publishing contract 4.5). A package without that file (a
+source with no positions, contract 3) needs no reference datasets. The files in this directory of
 the repository are templates. The real directory is `gridpantry/datasets/reference`, kept with
 DVC. Every lookup runs locally: no coordinate is sent to any web service.
 

@@ -13,7 +13,7 @@ from pydantic import BaseModel, ValidationError
 
 from gridmeta.package_models import Provenance, Sanitize, Source, Verify
 
-CONTRACT_VERSION = "0.7.0"
+CONTRACT_VERSION = "0.7.1"
 APPLICATION_SPECIFIC = "ApplicationSpecific"
 OPTIONAL_VERIFY_COUNTS = ("high_leg_nodes", "ungrounded_nodes")
 MODEL_ID = re.compile(r"^[A-Z]{2}-[0-9a-f]{10}$")

@@ -38,6 +38,17 @@ MODEL_NUMBERS = {
     "gk:capacitorCount": 1,
 }
 
+SANITIZE = {
+    "tool": "grid-reducer",
+    "version": "0.3.0",
+    "config_sha256": "0" * 64,
+    "reduce": {"transformers": False, "lines": False},
+    "layout": {"enabled": False, "obfuscation": "none"},
+    "noise": {"transformers": "none", "lines": "low", "loads": "none", "layout": "none"},
+    "rename": True,
+}
+LOCATION_PROPERTIES = ["gk:setting", "gk:settingShares", "gk:regionClass", "gk:climateRegion"]
+
 
 @pytest.fixture
 def reference_dir(tmp_path) -> Path:
@@ -51,6 +62,13 @@ def package(tmp_path) -> Path:
 
 def record_data(package: Path, reference_dir: Path) -> dict:
     return json.loads(record_json(describe(package, reference_dir)))
+
+
+def feeder_without_positions() -> FeederBuilder:
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    feeder.load("n1", 2.0)
+    return feeder
 
 
 def test_reproduces_the_example_record(package, reference_dir):
@@ -154,19 +172,9 @@ def test_zero_of_a_missing_component_is_left_out(tmp_path, reference_dir):
 
 
 def test_sanitised_package_without_positions(tmp_path, reference_dir):
-    feeder = FeederBuilder()
-    feeder.line("head", "n1", 1.0)
-    feeder.load("n1", 2.0)
-    sanitize = {
-        "tool": "grid-reducer",
-        "version": "0.3.0",
-        "config_sha256": "0" * 64,
-        "reduce": {"transformers": False, "lines": False},
-        "layout": {"enabled": False, "obfuscation": "none"},
-        "noise": {"transformers": "none", "lines": "low", "loads": "none", "layout": "none"},
-        "rename": True,
-    }
-    package = write_package(tmp_path / "packages", feeder, EXAMPLE_SERVICE_POINTS, sanitize)
+    package = write_package(
+        tmp_path / "packages", feeder_without_positions(), EXAMPLE_SERVICE_POINTS, SANITIZE
+    )
     record = record_data(package, reference_dir)
     levels = {
         m["gk:component"]: m["gk:provenanceLevel"] for m in record["dqv:hasQualityMeasurement"]
@@ -175,6 +183,36 @@ def test_sanitised_package_without_positions(tmp_path, reference_dir):
     assert levels["gk:Component.Coordinates"] == "gk:ProvenanceLevel.Missing"
     assert record["gk:geographicSpecificity"] == "gk:GeographicSpecificity.None"
     assert record["gk:secondaryModeling"] == "gk:SecondaryModeling.None"
+
+
+def test_source_without_positions_needs_no_service_points(tmp_path):
+    """Contract 3: no positions and no sanitize.json; no reference datasets are needed."""
+    package = write_package(tmp_path / "packages", feeder_without_positions(), "")
+    (package / "private" / "service_points.csv").unlink()
+    result = CliRunner().invoke(
+        cli, ["describe", str(package)], env={"GRIDMETA_REFERENCE_DIR": ""}
+    )
+    assert result.exit_code == 0, result.output
+    record = json.loads(result.output)
+    assert not set(LOCATION_PROPERTIES) & set(record)
+    assert record["gk:geographicSpecificity"] == "gk:GeographicSpecificity.None"
+    levels = {
+        m["gk:component"]: m["gk:provenanceLevel"] for m in record["dqv:hasQualityMeasurement"]
+    }
+    assert levels["gk:Component.Coordinates"] == "gk:ProvenanceLevel.Missing"
+
+
+def test_positions_without_service_points_are_refused(package, reference_dir):
+    (package / "private" / "service_points.csv").unlink()
+    with pytest.raises(InvalidPackage, match=r"service_points\.csv: file is missing"):
+        describe(package, reference_dir)
+
+
+def test_sanitised_package_without_service_points_is_refused(tmp_path, reference_dir):
+    package = write_package(tmp_path / "packages", feeder_without_positions(), "", SANITIZE)
+    (package / "private" / "service_points.csv").unlink()
+    with pytest.raises(InvalidPackage, match=r"service_points\.csv: file is missing"):
+        describe(package, reference_dir)
 
 
 def test_area_objects_change_nothing(tmp_path, package, reference_dir):
