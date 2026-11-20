@@ -1,7 +1,9 @@
 {
   "@context": [
     "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld",
-    "gk-context.jsonld (inlined here in shipped files)"
+    {
+      "spdx": "http://spdx.org/rdf/terms#"
+    }
   ],
   "@id": "urn:uuid:798f4b0e-18fb-5b1e-999f-65edb77631a1",
   "@type": "dcat:Catalog",
@@ -10,12 +12,10 @@
   "dcat:dataset": [
     {
       "@id": "urn:uuid:7cbe316f-83e1-5cb9-a922-d6d98e531a24",
-      "@type": [
-        "dcat:Dataset",
-        "cim:FrameModel"
-      ],
+      "@type": "dcat:Dataset",
       "dct:identifier": "7cbe316f-83e1-5cb9-a922-d6d98e531a24",
       "dct:title": "VT-0a1b2c3d4e",
+      "dct:issued": "2026-11-19T17:00:00Z",
       "dcat:version": "1.0.0",
       "dcat:isVersionOf": {
         "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e"
@@ -23,31 +23,21 @@
       "dcat:landingPage": {
         "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e/1.0.0"
       },
-      "dcat:inSeries": {
-        "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e"
+      "dcat:inSeries": [
+        {
+          "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e",
+          "@type": "dcat:DatasetSeries",
+          "dct:title": "Grid Kitchen substation VT-1a2b3c4d5e"
+        },
+        {
+          "@id": "https://gridkitchen.pnnl.gov/series/VT-4d5e6f7a8b",
+          "@type": "dcat:DatasetSeries",
+          "dct:title": "Grid Kitchen distribution area VT-4d5e6f7a8b"
+        }
+      ],
+      "dct:license": {
+        "@id": "https://spdx.org/licenses/BSD-3-Clause.html"
       },
-      "dct:requires": [
-        {
-          "@id": "urn:uuid:d52034da-ad28-5309-aafa-bd05c6f0ce58"
-        },
-        {
-          "@id": "urn:uuid:2d35e852-5b68-5ed0-bfd0-401da8ac5f7c"
-        },
-        {
-          "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9"
-        },
-        {
-          "@id": "urn:uuid:74a9a8cc-5eb7-5ed0-ba10-da6671069eba"
-        },
-        {
-          "@id": "urn:uuid:81e5ab73-9865-5b5e-9319-5a8f1057dd81"
-        }
-      ],
-      "cim:FrameModel.perimeter": [
-        {
-          "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9"
-        }
-      ],
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
@@ -71,9 +61,9 @@
         },
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/spans.cimtbl",
+          "dcat:accessURL": "assembly.xml",
           "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
           },
           "dcat:byteSize": 1037,
           "spdx:checksum": {
@@ -81,94 +71,11 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "73ba9cc93be87be34d1e376c8817a5e7c2f768cf98716fe8297d772eadd6efc9"
+            "spdx:checksumValue": "aeeead031a0005902990f0a2ed35da9fe825b6b64443273edb784b339536b7ac"
           },
           "dct:conformsTo": [
             {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
-            }
-          ]
-        },
-        {
-          "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/transformers.cimtbl",
-          "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/text/plain"
-          },
-          "dcat:byteSize": 1074,
-          "spdx:checksum": {
-            "@type": "spdx:Checksum",
-            "spdx:algorithm": {
-              "@id": "spdx:checksumAlgorithm_sha256"
-            },
-            "spdx:checksumValue": "855a8f1ccf120a00ce4133933433c8641b69671be3363282c15691228ba35c64"
-          },
-          "dct:conformsTo": [
-            {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
-            }
-          ]
-        },
-        {
-          "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/loads.cimtbl",
-          "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/text/plain"
-          },
-          "dcat:byteSize": 1111,
-          "spdx:checksum": {
-            "@type": "spdx:Checksum",
-            "spdx:algorithm": {
-              "@id": "spdx:checksumAlgorithm_sha256"
-            },
-            "spdx:checksumValue": "e09eb9087f4f54b6da74b330245455d29b12b262ec7e75a25a7acb7ef30054a0"
-          },
-          "dct:conformsTo": [
-            {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
-            }
-          ]
-        },
-        {
-          "@type": "dcat:Distribution",
-          "dcat:accessURL": "VT-0a1b2c3d4e.jsonld",
-          "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
-          },
-          "dcat:byteSize": 1148,
-          "spdx:checksum": {
-            "@type": "spdx:Checksum",
-            "spdx:algorithm": {
-              "@id": "spdx:checksumAlgorithm_sha256"
-            },
-            "spdx:checksumValue": "7ef0701d3893495015fa66acda98bf1b11abbf2c590e4a8866dccae6205d5cb4"
-          },
-          "dct:conformsTo": [
-            {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
-            },
-            {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
-            }
-          ]
-        },
-        {
-          "@type": "dcat:Distribution",
-          "dcat:accessURL": "VT-0a1b2c3d4e.xml",
-          "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
-          },
-          "dcat:byteSize": 1185,
-          "spdx:checksum": {
-            "@type": "spdx:Checksum",
-            "spdx:algorithm": {
-              "@id": "spdx:checksumAlgorithm_sha256"
-            },
-            "spdx:checksumValue": "f5a383576fe5becb49b552a9653ec1d24466d8136e6143c0b5a4a59fd9272848"
-          },
-          "dct:conformsTo": [
-            {
-              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+              "@id": "urn:iso:std:iec:61970-552:2016"
             }
           ]
         },
@@ -178,7 +85,7 @@
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/markdown"
           },
-          "dcat:byteSize": 1222,
+          "dcat:byteSize": 1074,
           "spdx:checksum": {
             "@type": "spdx:Checksum",
             "spdx:algorithm": {
@@ -193,7 +100,7 @@
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/application/x-ipynb+json"
           },
-          "dcat:byteSize": 1259,
+          "dcat:byteSize": 1111,
           "spdx:checksum": {
             "@type": "spdx:Checksum",
             "spdx:algorithm": {
@@ -208,7 +115,7 @@
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
-          "dcat:byteSize": 1296,
+          "dcat:byteSize": 1148,
           "spdx:checksum": {
             "@type": "spdx:Checksum",
             "spdx:algorithm": {
@@ -223,7 +130,7 @@
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
-          "dcat:byteSize": 1333,
+          "dcat:byteSize": 1185,
           "spdx:checksum": {
             "@type": "spdx:Checksum",
             "spdx:algorithm": {
@@ -235,17 +142,134 @@
       ]
     },
     {
-      "@id": "urn:uuid:d52034da-ad28-5309-aafa-bd05c6f0ce58",
-      "@type": [
-        "dcat:Dataset"
-      ],
-      "dct:title": "Catalogue data",
+      "@id": "urn:uuid:71b89b52-07bd-516f-b323-0cdcc8b00aed",
+      "@type": "dcat:Dataset",
+      "dct:title": "Distribution area frame",
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/catalog.cimtbl",
+          "dcat:accessURL": "cimtbl/area.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1222,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "37b82f8232f0575305d5e5e08b2d123d9507958f061b817108d858a2a61edae9"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ],
+      "dct:hasPart": [
+        {
+          "@id": "urn:uuid:aa92612c-2450-5e52-9073-d78065267a68"
+        },
+        {
+          "@id": "urn:uuid:935a6b26-671e-5fcd-bc23-904804d68223"
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b",
+      "@type": "dcat:Dataset",
+      "dct:title": "Boundary",
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/boundary.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1259,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "2279fef21c188cd4f5681878209646a3431fad2c3ca923bf7fcebc81212a124d"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ],
+      "dct:hasPart": [
+        {
+          "@id": "urn:uuid:cdd6a9d8-345d-525b-9a54-22880426952b"
+        },
+        {
+          "@id": "urn:uuid:114adf56-2d7c-5233-9415-295dca91f8fb"
+        },
+        {
+          "@id": "urn:uuid:97f1e5c5-a2eb-598d-8903-d09be6cfefc9"
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:74a9a8cc-5eb7-5ed0-ba10-da6671069eba",
+      "@type": "dcat:Dataset",
+      "dct:title": "Substation frame",
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/substation_VT-1a2b3c4d5e.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1296,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "4be11acdd18b4f16d880ab6d5fd5097e5901ba85992b36891670bdb9cf3cd47c"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/substation_VT-1a2b3c4d5e.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 1333,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "7cfe56c0e074b69f38f1d736027f41f8ad46d83adbc79b6f375905ca21ad80a2"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/substation_VT-1a2b3c4d5e.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
           },
           "dcat:byteSize": 1370,
           "spdx:checksum": {
@@ -253,9 +277,12 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "009e43927c60afd72e1d8308afa2f67fe565d181f5b077bbe73d7a882233a199"
+            "spdx:checksumValue": "1d34f55ffa711059a7e5b64b5de85ae42ea05039a0b88666b6466d81cf84a2e3"
           },
           "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
             {
               "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
             }
@@ -264,15 +291,13 @@
       ]
     },
     {
-      "@id": "urn:uuid:2d35e852-5b68-5ed0-bfd0-401da8ac5f7c",
-      "@type": [
-        "dcat:Dataset"
-      ],
-      "dct:title": "Areas",
+      "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame",
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/areas.cimtbl",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
@@ -282,7 +307,7 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "4d628178a187b2a4c09904220d66d37dd26520213e250c2d8c8571bf32914203"
+            "spdx:checksumValue": "4a198690010d9f3e1f46b3ccd02d1cf518b453260d166438873acab08bb66f63"
           },
           "dct:conformsTo": [
             {
@@ -290,24 +315,36 @@
             }
           ]
         }
+      ],
+      "dct:hasPart": [
+        {
+          "@id": "urn:uuid:e5da4355-bf83-575f-a2e7-27f162e4ddd9"
+        },
+        {
+          "@id": "urn:uuid:226c8405-4631-5019-9436-5243771677ac"
+        },
+        {
+          "@id": "urn:uuid:ce0ffe7b-66bc-5a9e-8ccc-289f56078634"
+        },
+        {
+          "@id": "urn:uuid:8ebe1906-2ba7-5dc5-b678-cb9e66e22365"
+        },
+        {
+          "@id": "urn:uuid:2bc4a88e-d0ef-5688-b954-76634fad2dfa"
+        },
+        {
+          "@id": "urn:uuid:59b597ff-ba16-51e2-ac4e-06a3b1daeb27"
+        }
       ]
     },
     {
-      "@id": "urn:uuid:ab4c1686-06d1-5fa5-8f55-61bfa99d5ea9",
-      "@type": [
-        "dcat:Dataset",
-        "cim:BoundaryModel"
-      ],
-      "dct:title": "Boundary nodes",
-      "dct:requires": [
-        {
-          "@id": "urn:uuid:2d35e852-5b68-5ed0-bfd0-401da8ac5f7c"
-        }
-      ],
+      "@id": "urn:uuid:7648cc37-4656-5e13-b8dd-c9b5170bfdfe",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder situation",
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/boundary_VT-0a1b2c3d4e_VT-5e6f7a8b9c.cimtbl",
+          "dcat:accessURL": "cimtbl/ssh_VT-0a1b2c3d4e.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
@@ -317,34 +354,19 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "64015c25d5b926f25507740de420b7dde0bd1c8476dccb70a3bad91805d61ef2"
+            "spdx:checksumValue": "8e4c58cc7c54272c06c73c09ef0d431a09b03aa8ac7767af1c637abb8f692db7"
           },
           "dct:conformsTo": [
             {
               "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
             }
           ]
-        }
-      ]
-    },
-    {
-      "@id": "urn:uuid:74a9a8cc-5eb7-5ed0-ba10-da6671069eba",
-      "@type": [
-        "dcat:Dataset",
-        "cim:FrameModel"
-      ],
-      "dct:title": "Substation",
-      "dct:requires": [
-        {
-          "@id": "urn:uuid:d52034da-ad28-5309-aafa-bd05c6f0ce58"
-        }
-      ],
-      "dcat:distribution": [
+        },
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/substation.cimtbl",
+          "dcat:accessURL": "jsonld/ssh_VT-0a1b2c3d4e.jsonld",
           "dcat:mediaType": {
-            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
           },
           "dcat:byteSize": 1481,
           "spdx:checksum": {
@@ -352,9 +374,38 @@
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "c57572814257ebf1842d59062f888d78579cf3a086e474e3c8121ed4f2226347"
+            "spdx:checksumValue": "466c6b7eb8485d9faa3e57ef867414b734dced39487a0b40427f5e23de9172fa"
           },
           "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/ssh_VT-0a1b2c3d4e.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 1518,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "ede07803367aab9bddbed4b0676c12223a06544ed37881c5c883e4a8a86fda8f"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
             {
               "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
             }
@@ -363,32 +414,867 @@
       ]
     },
     {
-      "@id": "urn:uuid:81e5ab73-9865-5b5e-9319-5a8f1057dd81",
-      "@type": [
-        "dcat:Dataset"
-      ],
-      "dct:title": "Shared objects",
-      "dct:requires": [
-        {
-          "@id": "urn:uuid:d52034da-ad28-5309-aafa-bd05c6f0ce58"
-        }
-      ],
+      "@id": "urn:uuid:e5da4355-bf83-575f-a2e7-27f162e4ddd9",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: nodes",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
       "dcat:distribution": [
         {
           "@type": "dcat:Distribution",
-          "dcat:accessURL": "cimtbl/shared_VT-0a1b2c3d4e_VT-2c3d4e5f6a.cimtbl",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/nodes.cimtbl",
           "dcat:mediaType": {
             "@id": "https://www.iana.org/assignments/media-types/text/plain"
           },
-          "dcat:byteSize": 1518,
+          "dcat:byteSize": 1555,
           "spdx:checksum": {
             "@type": "spdx:Checksum",
             "spdx:algorithm": {
               "@id": "spdx:checksumAlgorithm_sha256"
             },
-            "spdx:checksumValue": "eb8e408983f1f787a6bbebfed4d95f861c8be444f6274fbce7d8bbbf9a6a6424"
+            "spdx:checksumValue": "b4bdef470363333e32e65df3470c8db742d34411b5951325782033bf20f1052c"
           },
           "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/nodes.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 1592,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "29d41f893cfd4411b717d77b13a8a1f8d91fded302593123d043eb37463b1f62"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/nodes.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 1629,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "6a4129e599a044e2b166fca8706080c0dff31767158920eb73eaa49058cfd9d4"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:226c8405-4631-5019-9436-5243771677ac",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: lines",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/lines.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1666,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "1bd51c8a8394843f47f86bbe6fb603b63d7621a3a4ef4c1ace486a520ccc01fb"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/lines.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 1703,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "68ca5f8b63c10301da15c4002d5fc83f0fd719af3a2585b7212abbd2228700a2"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/lines.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 1740,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "fa9f14d8fc10018be4d5e038540b1682d88117f465832a37b7c3a309a6afe9f0"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:ce0ffe7b-66bc-5a9e-8ccc-289f56078634",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: switches",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/switches.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1777,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "8f84cbd3766b0c9775f24f36b866ad3ce1c35fbc63b3a3a7619fb2bc1c5a0f4a"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/switches.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 1814,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "5248246e014dc625aeb1ae9245401be6701fb7047b9127424c5aa1fc62b271b1"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/switches.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 1851,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "d88fc5076fd8c58873dc418eec40994ac721b7a9bfce8b5833f63e3b63dfbacc"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:8ebe1906-2ba7-5dc5-b678-cb9e66e22365",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: transformers",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/transformers.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1888,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "4bb570efa1c3209bf38bbedbb135b9cdf24e4f0e9837e44e386769071bd9f355"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/transformers.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 1925,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "0bfa63f9f2159481cee0e787829595e5db5e6476417a811037360c8021334a1d"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/transformers.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 1962,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "25ac985da0d5f9ded64e4e4b57b25258ad386e3aea861d5c2a69fec51b37a1fe"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:2bc4a88e-d0ef-5688-b954-76634fad2dfa",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: loads",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/loads.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 1999,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "5c99e7e6ad1eba9bb41842cfa2e512f1b23ffed4d97279a501ea764264996b23"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/loads.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2036,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "e0bc02ca495229b0bb28ea2071e38b33319bd9d5d5d0d1c0936a50d9f9d0b742"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/loads.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2073,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "80a40945fb7aa9a409dd574c394a55781732ca04b967e9a667a50b9a252718d4"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:59b597ff-ba16-51e2-ac4e-06a3b1daeb27",
+      "@type": "dcat:Dataset",
+      "dct:title": "Feeder frame: generators",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:955795a0-58ae-5085-b3fe-f79eccfa9973"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/feeder_VT-0a1b2c3d4e/generators.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2110,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "b936220797835c9a622ea362dd0a450c0ee48da5c814189b0943303541bff680"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/feeder_VT-0a1b2c3d4e/generators.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2147,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "50a453d59f15216bf940072afe8c633243d626b032041c94c289c7098ffcb405"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/feeder_VT-0a1b2c3d4e/generators.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2184,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "ee1e9e87fb07790708d0bae3450c76afeb1430e91abfb244737416de7c076da7"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:aa92612c-2450-5e52-9073-d78065267a68",
+      "@type": "dcat:Dataset",
+      "dct:title": "Distribution area frame: feeder_VT-0a1b2c3d4e",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:71b89b52-07bd-516f-b323-0cdcc8b00aed"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/area/feeder_VT-0a1b2c3d4e.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2221,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "9c3128dfb88dd77c651cb7f02da983465c619bd3fcb61c004ff637b817ab7aba"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/area/feeder_VT-0a1b2c3d4e.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2258,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "85036dc33c1e6dae3e31a2307057d214627bbe70f4e606e35cb3b820db34cbf9"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/area/feeder_VT-0a1b2c3d4e.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2295,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "2f801e83418d023fb54d5a3926b8b28ca9e07b2b8b4d03daeece2f4172cf47b2"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:935a6b26-671e-5fcd-bc23-904804d68223",
+      "@type": "dcat:Dataset",
+      "dct:title": "Distribution area frame: ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:71b89b52-07bd-516f-b323-0cdcc8b00aed"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/area/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2332,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "2848f1afa71d39d84c96fc7c4c97d691c0235cc27df7826996e5263c17adc3d7"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/area/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2369,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "1dc6629ca0fc5948b3fd0a8693633aa2d4b92d70d922ea2f550c83e63cd2d59f"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/area/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2406,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "8c43eb6f3371f8b5ddd06c841024908acdfea2cb29fd88c88850cfa2be04024c"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:cdd6a9d8-345d-525b-9a54-22880426952b",
+      "@type": "dcat:Dataset",
+      "dct:title": "Boundary: head_VT-0a1b2c3d4e",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/boundary/head_VT-0a1b2c3d4e.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2443,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "f66fe7e221c9ca914ed043613735abdcb3300f704d518d92b0fba1e9f76f402f"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/boundary/head_VT-0a1b2c3d4e.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2480,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "36f5d95b6f873121490fb65549e305d18beaa5c1c33fa0965629ebcc94d66327"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/boundary/head_VT-0a1b2c3d4e.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2517,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "892a6dfe0266426a5167bbd7260687ad00340e1db28e6f15e9131954beb0bcea"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:114adf56-2d7c-5233-9415-295dca91f8fb",
+      "@type": "dcat:Dataset",
+      "dct:title": "Boundary: head_VT-2c3d4e5f6a",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/boundary/head_VT-2c3d4e5f6a.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2554,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "8b33ec9e5d93b2ba9ed0474698c4adb9889ea0b2b7f3e9404e9f4e7a16a7b309"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/boundary/head_VT-2c3d4e5f6a.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2591,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "8e52ff616ef93d62763cf32dbecb5b7e272ff5a0eb1bf04841824a433bbc9857"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/boundary/head_VT-2c3d4e5f6a.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2628,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "3a9354a4bf598c4110a1e5405bdb6f74eebc73a9bd4010f3d022212a1b29c20a"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "@id": "urn:uuid:97f1e5c5-a2eb-598d-8903-d09be6cfefc9",
+      "@type": "dcat:Dataset",
+      "dct:title": "Boundary: ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c",
+      "dct:isPartOf": {
+        "@id": "urn:uuid:9276614d-e084-5b30-8d8d-dac5d5478a1b"
+      },
+      "dcat:distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "cimtbl/boundary/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.cimtbl",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/text/plain"
+          },
+          "dcat:byteSize": 2665,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "5fd676fdfa6e60bc66b998a47f26d00099b20566f30efc5e964a53063a2e82d8"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "jsonld/boundary/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.jsonld",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/ld+json"
+          },
+          "dcat:byteSize": 2702,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "0014462d27927f3d06ae6fbdc87582ffe210171a3990fac0ea8df4653c537c0a"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-553:draft:ed-1"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
+            },
+            {
+              "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/units-si.jsonld"
+            }
+          ]
+        },
+        {
+          "@type": "dcat:Distribution",
+          "dcat:accessURL": "xml/boundary/ties_VT-0a1b2c3d4e_VT-5e6f7a8b9c.xml",
+          "dcat:mediaType": {
+            "@id": "https://www.iana.org/assignments/media-types/application/rdf+xml"
+          },
+          "dcat:byteSize": 2739,
+          "spdx:checksum": {
+            "@type": "spdx:Checksum",
+            "spdx:algorithm": {
+              "@id": "spdx:checksumAlgorithm_sha256"
+            },
+            "spdx:checksumValue": "612e11c1a519e43bdff0c61ea830205364e8fd54968c0e2097b610c02870ffcd"
+          },
+          "dct:conformsTo": [
+            {
+              "@id": "urn:iso:std:iec:61970-552:2016"
+            },
             {
               "@id": "https://pnnl-cim-tools.github.io/CIM-Profiles/cim18v17/0.2.0/context.jsonld"
             }

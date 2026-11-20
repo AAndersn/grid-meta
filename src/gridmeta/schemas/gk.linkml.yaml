@@ -251,7 +251,9 @@ slots:
       based_on: Protection
   recloserCount:
     title: Reclosers
-    description: Number of reclosers, including the feeder head device.
+    description: >-
+      Number of reclosers on the feeder. A head device inside the substation is the station's
+      breaker and is not counted.
     range: integer
     minimum_value: 0
     annotations:
@@ -305,8 +307,8 @@ slots:
   multiFeederCompatible:
     title: Multi-feeder compatible
     description: >-
-      Whether the shared substation objects have the same identifiers in every sibling feeder
-      package, so that sibling models can be joined.
+      Whether the package passes its distribution area's area test, so that it joins the
+      packages of its substation and of the feeders it ties to.
     range: boolean
     annotations:
       based_on: Topology

@@ -31,6 +31,11 @@ classes:
         required: true
       feeder:
         required: true
+      distribution_area:
+        required: true
+        description: >-
+          The source's name for the package's distribution area, from which the area group is
+          computed (contract 2 and 3.1). Never published.
       state:
         required: true
         pattern: "^[A-Z]{2}$"
@@ -52,11 +57,26 @@ classes:
       multi_feeder_compatible:
         range: boolean
         required: true
+        description: True only when the area test passes for the package's area (contract 3.5).
       model_scope:
         required: true
         description: >-
           The scope in which the utility's source keys are unique, as the .cimtbl master states
           it in Model = (contract 2).
+      feeder_area:
+        required: true
+        pattern: "^\\S"
+        description: The mRID of the package's own feederArea ConnectedArea (contract 3.1).
+      boundary_feeders:
+        range: BoundaryFeeder
+        multivalued: true
+        inlined: true
+        inlined_as_list: false
+        required: true
+        minimum_cardinality: 1
+        description: >-
+          Boundary node mRID -> model_id of the feeder frame on the node's feeder side, for every
+          head node and tie side node the archive ships, possibly the whole area (contract 3.1).
       pipeline:
         range: Pipeline
         required: true
@@ -66,6 +86,17 @@ classes:
         required: true
         minimum_cardinality: 1
         description: Every real name that must not appear in a shipped file.
+
+  BoundaryFeeder:
+    description: >-
+      One entry of boundary_feeders, written as "<node mRID>": "<model_id>".
+    attributes:
+      node:
+        identifier: true
+        description: The boundary node's mRID.
+      model_id:
+        required: true
+        pattern: "^[A-Z]{2}-[0-9a-f]{10}$"
 
   Utility:
     attributes:

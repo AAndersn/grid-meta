@@ -469,7 +469,7 @@ gk:modelClass a owl:ObjectProperty ;
 
 gk:multiFeederCompatible a owl:DatatypeProperty ;
     rdfs:label "Multi-feeder compatible"@en ;
-    rdfs:comment "Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined."@en ;
+    rdfs:comment "Whether the package passes its distribution area's area test, so that it joins the packages of its substation and of the feeders it ties to."@en ;
     rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
     rdfs:range xsd:boolean ;
     gk:basedOn gk:Component.Topology .
@@ -497,7 +497,7 @@ gk:provenanceLevel a owl:ObjectProperty ;
 
 gk:recloserCount a owl:DatatypeProperty ;
     rdfs:label "Reclosers"@en ;
-    rdfs:comment "Number of reclosers, including the feeder head device."@en ;
+    rdfs:comment "Number of reclosers on the feeder. A head device inside the substation is the station's breaker and is not counted."@en ;
     rdfs:isDefinedBy <https://gridkitchen.pnnl.gov/ns/gk> ;
     rdfs:range xsd:integer ;
     gk:basedOn gk:Component.Protection .

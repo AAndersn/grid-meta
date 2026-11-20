@@ -9,6 +9,7 @@ import yaml
 
 from generate import GK_SCHEMA, PACKAGE_SCHEMA
 from gridmeta.package import (
+    check_own_feeder,
     OPTIONAL_VERIFY_COUNTS,
     load_provenance,
     load_sanitize,
@@ -48,7 +49,10 @@ def test_examples_load():
     assert provenance.components.Secondary.missing
     verify = load_verify(CONTRACT_DIR / "verify.json")
     assert verify.status == "PASS"
-    assert verify.exported_from == "VT-0a1b2c3d4e.jsonld"
+    assert verify.exported_from == "jsonld/"
+    assert source.boundary_feeders["cn_head_example_1"] == "VT-0a1b2c3d4e"
+    assert source.feeder_area == "area_f_example_1"
+    assert source.distribution_area == "Example Distribution Area"
 
 
 def test_sanitize_loads(tmp_path):
@@ -88,7 +92,10 @@ def test_inferred_above_objects_is_rejected(tmp_path):
     [
         ({"use_case": "ApplicationSpecific"}, "applications"),
         ({"applications": ["Protection"]}, "applications"),
-        ({"contract_version": "0.2.7"}, "contract_version"),
+        ({"contract_version": "0.6.0"}, "contract_version"),
+        ({"distribution_area": 5}, "distribution_area"),
+        ({"feeder_area": ""}, "feeder_area"),
+        ({"feeder_area": " "}, "feeder_area"),
         ({"state": "Vermont"}, "state"),
         ({"model_class": "Synthetic"}, "model_class"),
         ({"forbidden_strings": []}, "forbidden_strings"),
@@ -137,7 +144,7 @@ def test_unknown_key_is_rejected(tmp_path):
         load_verify(path)
 
 
-@pytest.mark.parametrize("version", ["0.3.0", "0.3.9"])
+@pytest.mark.parametrize("version", ["0.7.0", "0.7.9"])
 def test_same_major_minor_is_accepted(tmp_path, version):
     source = write_json(
         tmp_path / "source.json", read_example("source.json") | {"contract_version": version}
@@ -147,7 +154,7 @@ def test_same_major_minor_is_accepted(tmp_path, version):
     assert load_provenance(write_json(tmp_path / "provenance.json", provenance))
 
 
-@pytest.mark.parametrize("version", ["0.2.7", "0.4.0", "1.3.0"])
+@pytest.mark.parametrize("version", ["0.6.0", "0.8.0", "1.7.0"])
 @pytest.mark.parametrize(
     "name, loader", [("source.json", load_source), ("provenance.json", load_provenance)]
 )
@@ -155,7 +162,7 @@ def test_other_minor_is_refused(tmp_path, name, loader, version):
     path = write_json(tmp_path / name, read_example(name) | {"contract_version": version})
     with pytest.raises(
         ValueError,
-        match=rf"{name}: contract_version is {re.escape(version)}; this gridmeta reads 0\.3\.x",
+        match=rf"{name}: contract_version is {re.escape(version)}; this gridmeta reads 0\.7\.x",
     ):
         loader(path)
 
@@ -176,6 +183,7 @@ def tools_with(**changes) -> dict:
         (pipeline_with(cim_profiles="0.2.0a1"), "pipeline.cim_profiles"),  # 0.1's field
         (tools_with(**{"cim-graph": ">=0.6"}), "pipeline.tools.cim-graph"),  # not exact
         (tools_with(**{"numpy": "2.1.0"}), "pipeline.tools.numpy"),
+        (tools_with(**{"cim-builder": "0.3.0"}), "pipeline.tools.cim-builder"),  # 0.5's tool
     ],
 )
 def test_invalid_pipeline_is_rejected(tmp_path, change, field):
@@ -188,11 +196,13 @@ def test_invalid_pipeline_is_rejected(tmp_path, change, field):
     "name, field, loader",
     [
         ("source.json", "model_scope", load_source),
+        ("source.json", "distribution_area", load_source),
+        ("source.json", "feeder_area", load_source),
         ("source.json", "pipeline.tools", load_source),
         ("verify.json", "exported_from", load_verify),
     ],
 )
-def test_missing_0_2_field_is_rejected(tmp_path, name, field, loader):
+def test_missing_required_field_is_rejected(tmp_path, name, field, loader):
     data = read_example(name)
     *parents, last = field.split(".")
     parent = data
@@ -204,9 +214,49 @@ def test_missing_0_2_field_is_rejected(tmp_path, name, field, loader):
         loader(path)
 
 
-def test_missing_tool_is_rejected(tmp_path):
+@pytest.mark.parametrize(
+    "boundary_feeders, message",
+    [
+        ({}, r"boundary_feeders: Dictionary should have at least 1 item"),
+        ({"cn_head": "vt-0a1b2c3d4e"}, r"boundary_feeders\.cn_head: must be a model_id"),
+        ({"cn_head": "VT-0a1b2c3d4"}, r"boundary_feeders\.cn_head: must be a model_id"),
+        ({"cn_head": {"model_id": "VT-0a1b2c3d4e"}}, r"boundary_feeders\.cn_head\.str: Input"),
+        (
+            {"cn_head": {"node": "cn_head", "model_id": "VT-0a1b2c3d4e"}},
+            r"boundary_feeders\.cn_head: must be a model_id",
+        ),
+    ],
+)
+def test_invalid_boundary_feeders_is_rejected(tmp_path, boundary_feeders, message):
+    change = {"boundary_feeders": boundary_feeders}
+    path = write_json(tmp_path / "source.json", read_example("source.json") | change)
+    with pytest.raises(ValueError, match=rf"source\.json: {message}"):
+        load_source(path)
+
+
+def test_area_frames_is_refused(tmp_path):
+    """0.7.0 replaces area_frames with boundary_feeders (contract 3.1)."""
+    change = {"area_frames": ["VT-0a1b2c3d4e", "VT-5e6f7a8b9c"]}
+    path = write_json(tmp_path / "source.json", read_example("source.json") | change)
+    with pytest.raises(ValueError, match=r"source\.json: area_frames: Extra inputs"):
+        load_source(path)
+
+
+def test_own_feeder_must_be_mapped():
+    source = load_source(CONTRACT_DIR / "source.json")
+    check_own_feeder(CONTRACT_DIR / "source.json", source, "VT-0a1b2c3d4e")
+    with pytest.raises(
+        ValueError,
+        match=r"source\.json: boundary_feeders: no boundary node maps to the package's model_id "
+        r"VT-9999999999",
+    ):
+        check_own_feeder(CONTRACT_DIR / "source.json", source, "VT-9999999999")
+
+
+@pytest.mark.parametrize("tool", ["cimhub-opendss", "cim-tables"])
+def test_missing_tool_is_rejected(tmp_path, tool):
     source = read_example("source.json")
-    del source["pipeline"]["tools"]["cimhub-opendss"]
+    del source["pipeline"]["tools"][tool]
     path = write_json(tmp_path / "source.json", source)
-    with pytest.raises(ValueError, match=r"source\.json: pipeline\.tools\.cimhub-opendss"):
+    with pytest.raises(ValueError, match=rf"source\.json: pipeline\.tools\.{re.escape(tool)}"):
         load_source(path)

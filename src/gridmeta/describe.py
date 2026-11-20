@@ -12,6 +12,7 @@ import jsonschema
 from gridmeta.location import load_reference, location_properties
 from gridmeta.package import (
     APPLICATION_SPECIFIC,
+    check_own_feeder,
     load_provenance,
     load_sanitize,
     load_source,
@@ -57,13 +58,16 @@ def build_record(package_dir: Path, reference_dir: Path) -> dict:
     """The feeder record as JSON data, before validation."""
     package_dir = Path(package_dir)
     problems = []
-    source = _collect(problems, load_source, package_dir / "source.json")
+    source_path = package_dir / "source.json"
+    source = _collect(problems, load_source, source_path)
+    if source is not None:
+        _collect(problems, check_own_feeder, source_path, source, package_dir.name)
     provenance = _collect(problems, load_provenance, package_dir / "provenance.json")
     _collect(problems, load_verify, package_dir / "verify.json")
     sanitize_path = package_dir / "sanitize.json"
     sanitize = _collect(problems, load_sanitize, sanitize_path) if sanitize_path.exists() else None
-    data_file = package_dir / f"{package_dir.name}.jsonld"
-    structure = _collect(problems, structural_properties, data_file)
+    jsonld_dir = package_dir / "jsonld"
+    structure = _collect(problems, structural_properties, jsonld_dir, package_dir.name)
     reference = _collect(problems, load_reference, Path(reference_dir))
     location = None
     if reference is not None:

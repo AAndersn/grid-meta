@@ -373,7 +373,7 @@ class FeederRecord(BaseModel):
     """
     recloser_count: Annotated[int | None, Field(alias='gk:recloserCount', ge=0)] = None
     """
-    Number of reclosers, including the feeder head device.
+    Number of reclosers on the feeder. A head device inside the substation is the station's breaker and is not counted.
     """
     sectionalizer_count: Annotated[
         int | None, Field(alias='gk:sectionalizerCount', ge=0)
@@ -417,7 +417,7 @@ class FeederRecord(BaseModel):
     """
     multi_feeder_compatible: Annotated[bool, Field(alias='gk:multiFeederCompatible')]
     """
-    Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined.
+    Whether the package passes its distribution area's area test, so that it joins the packages of its substation and of the feeders it ties to.
     """
     has_quality_measurement: Annotated[
         list[QualityMeasurement],

@@ -1,4 +1,5 @@
-"""Keyed feeder and substation identifiers (Grid Kitchen publishing contract, section 2)."""
+"""Keyed feeder, substation and distribution area identifiers (Grid Kitchen publishing contract,
+section 2)."""
 
 import hashlib
 import hmac
@@ -47,6 +48,16 @@ def sibling_group(state: str, utility: str, substation: str, key: str) -> str:
     """
     names = {"utility": utility, "substation": substation}
     return _keyed_id("sibling_group", state, names, key)
+
+
+def area_group(state: str, utility: str, distribution_area: str, key: str) -> str:
+    """The distribution area's group, from HMAC-SHA256(key, "<utility>/area/<distribution area>").
+
+    The literal "area" segment keeps an area apart from a substation of the same name. The group
+    titles the area frame and keys the distribution area series (dcat:inSeries).
+    """
+    names = {"utility": utility, "segment": "area", "distribution_area": distribution_area}
+    return _keyed_id("area_group", state, names, key)
 
 
 def utility_code(utility: str, key: str) -> str:

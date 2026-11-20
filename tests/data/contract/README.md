@@ -9,11 +9,11 @@ Rural 12.47 kV distribution feeder in VT with 1,740 loads and 74 DGs; individual
 
 | File | What it is |
 |---|---|
-| `VT-0a1b2c3d4e.jsonld` | CIM JSON-LD (cim18v17 profile, SI units) |
-| `VT-0a1b2c3d4e.xml` | CIM RDF/XML |
-| `cimtbl/VT-0a1b2c3d4e.cimtbl` | `.cimtbl` master; it loads the other files in `cimtbl/` |
+| `cimtbl/VT-0a1b2c3d4e.cimtbl` | `.cimtbl` master; it loads every model in `cimtbl/` |
+| `cimtbl/`, `jsonld/`, `xml/` | Each model in `.cimtbl`, CIM JSON-LD (cim18v17 profile, SI units) and CIM RDF/XML: distribution area frame, boundary, substation frame, feeder frame, and the feeder situation (SSH). The feeder frame is split into concept chunks under `feeder_VT-0a1b2c3d4e/` (nodes, lines, switches, transformers, loads and generators); the distribution area frame and boundary into the chunks this feeder needs, under `area/` and `boundary/` |
 | `notebook.ipynb` | Opens each format and exports an OpenDSS deck |
-| `manifest.jsonld` | Every file with its size and SHA-256, and how this feeder joins other feeders |
+| `manifest.jsonld` | Every model and file, with its size and SHA-256 |
+| `assembly.xml` | How the models fit together: frames, boundary and the feeders this one meets |
 | `LICENSE.txt`, `DISCLAIMER.txt` | License and disclaimer |
 
 ## Open the model
@@ -24,6 +24,7 @@ pip install "cim-graph==0.6.1" "cim-profiles==0.2.0" "cim-tables==0.2.0a1" "cimh
 
 ```python
 import os
+from pathlib import Path
 
 os.environ["CIMG_CIM_PROFILE"] = "cim18v17"
 os.environ["CIMG_USE_UNITS"] = "true"
@@ -33,8 +34,9 @@ from cimgraph.databases import JSONLDFile
 from cimgraph.models import NodeBreakerModel
 from cimhub_opendss import cim_to_dss
 
-network = NodeBreakerModel(container=None, connection=JSONLDFile("VT-0a1b2c3d4e.jsonld"), distributed=False)
-cim_to_dss(network, "opendss/jsonld/VT-0a1b2c3d4e.dss", switch_state="normal")
+files = sorted(str(path) for path in Path("jsonld").rglob("*.jsonld"))
+network = NodeBreakerModel(container=None, connection=JSONLDFile(files), distributed=False)
+cim_to_dss(network, "opendss/jsonld/VT-0a1b2c3d4e.dss")
 ```
 
 `notebook.ipynb` does the same for the CIM XML and `.cimtbl` files, and solves the deck with OpenDSS.

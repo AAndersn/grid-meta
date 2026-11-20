@@ -29,6 +29,12 @@
       "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e",
       "title": "Grid Kitchen substation VT-1a2b3c4d5e",
       "description": "Distribution feeders published from one substation."
+    },
+    {
+      "@type": "DatasetSeries",
+      "@id": "https://gridkitchen.pnnl.gov/series/VT-4d5e6f7a8b",
+      "title": "Grid Kitchen distribution area VT-4d5e6f7a8b",
+      "description": "Distribution feeders of one distribution area, joined by ties."
     }
   ],
   "dataset": [
@@ -58,9 +64,14 @@
       "version": "1.0.0",
       "versionNotes": "First release.",
       "dcat:isVersionOf": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e",
-      "dcat:inSeries": {
-        "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e"
-      },
+      "dcat:inSeries": [
+        {
+          "@id": "https://gridkitchen.pnnl.gov/series/VT-1a2b3c4d5e"
+        },
+        {
+          "@id": "https://gridkitchen.pnnl.gov/series/VT-4d5e6f7a8b"
+        }
+      ],
       "landingPage": {
         "@type": "Document",
         "@id": "https://gridkitchen.pnnl.gov/models/VT-0a1b2c3d4e/1.0.0",

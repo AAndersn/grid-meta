@@ -1,10 +1,11 @@
 {
-  "contract_version": "0.3.0",
+  "contract_version": "0.7.0",
   "utility": {
     "name": "Example Electric Cooperative"
   },
   "substation": "Example Substation",
   "feeder": "Example Feeder 1",
+  "distribution_area": "Example Distribution Area",
   "state": "VT",
   "source_export_date": "2026-07-21",
   "model_class": "Geographic",
@@ -27,6 +28,14 @@
   "forbidden_strings": [
     "Example Electric Cooperative",
     "Example Substation",
-    "Example Feeder 1"
-  ]
+    "Example Feeder 1",
+    "Example Distribution Area"
+  ],
+  "boundary_feeders": {
+    "cn_head_example_1": "VT-0a1b2c3d4e",
+    "cn_head_example_2": "VT-2c3d4e5f6a",
+    "cn_tie_example_1_a": "VT-0a1b2c3d4e",
+    "cn_tie_example_1_b": "VT-5e6f7a8b9c"
+  },
+  "feeder_area": "area_f_example_1"
 }

@@ -5,6 +5,7 @@ rules a schema cannot express, and raises ValueError naming the file and field.
 """
 
 import json
+import re
 from pathlib import Path
 from typing import TypeVar
 
@@ -12,9 +13,10 @@ from pydantic import BaseModel, ValidationError
 
 from gridmeta.package_models import Provenance, Sanitize, Source, Verify
 
-CONTRACT_VERSION = "0.3.0"
+CONTRACT_VERSION = "0.7.0"
 APPLICATION_SPECIFIC = "ApplicationSpecific"
 OPTIONAL_VERIFY_COUNTS = ("high_leg_nodes", "ungrounded_nodes")
+MODEL_ID = re.compile(r"^[A-Z]{2}-[0-9a-f]{10}$")
 
 Model = TypeVar("Model", bound=BaseModel)
 
@@ -59,7 +61,7 @@ def _check_contract_version(path: Path, contract_version: str) -> None:
 
 def load_source(path: Path) -> Source:
     """source.json (3.1). `applications` is non-empty exactly when the use case is
-    ApplicationSpecific."""
+    ApplicationSpecific; every `boundary_feeders` value is a model_id."""
     source = _validate(path, Source)
     _check_contract_version(path, source.contract_version)
     if (source.use_case == APPLICATION_SPECIFIC) != bool(source.applications):
@@ -68,7 +70,22 @@ def load_source(path: Path) -> Source:
             f"{APPLICATION_SPECIFIC}; got use_case {source.use_case} and "
             f"applications {source.applications}"
         )
+    # The generated model takes each value as given: it checks no pattern on the "node": value form.
+    for node, model_id in source.boundary_feeders.items():
+        if not isinstance(model_id, str) or not MODEL_ID.match(model_id):
+            raise ValueError(
+                f"{path}: boundary_feeders.{node}: must be a model_id (<ST>-<10 hex>), got "
+                f"{model_id!r}"
+            )
     return source
+
+
+def check_own_feeder(path: Path, source: Source, model_id: str) -> None:
+    """The package's own model_id is a value of `boundary_feeders` (3.1)."""
+    if model_id not in source.boundary_feeders.values():
+        raise ValueError(
+            f"{path}: boundary_feeders: no boundary node maps to the package's model_id {model_id}"
+        )
 
 
 def load_provenance(path: Path) -> Provenance:

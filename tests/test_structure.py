@@ -1,4 +1,5 @@
-"""M1: structural properties from the CIM data file (contract 4.2), one synthetic feeder per rule."""
+"""M1: structural properties from the package's CIM models (contract 3.5 and 4.2), one synthetic
+feeder per rule."""
 
 from pathlib import Path
 
@@ -6,17 +7,16 @@ import cimprofiles.cim18.cim18v17 as cim
 import pytest
 from cimgraph.databases import XMLFile
 from cimgraph.models import NodeBreakerModel
-from cimgraph.utils import write_json_ld
 
 from gridmeta.structure import size_distribution, structural_properties, voltage_class
-from synthetic import WGS84, FeederBuilder, example_feeder, use_profile
+from synthetic import MODEL_ID, WGS84, FeederBuilder, example_feeder, use_profile, write_models
 
 IEEE13_XML = Path(__file__).parent / "data" / "cim" / "ieee13.xml"
 WC = cim.WindingConnection
 
 
 def describe_feeder(feeder: FeederBuilder, tmp_path: Path) -> dict:
-    return structural_properties(feeder.write(tmp_path / "VT-0a1b2c3d4e.jsonld"))
+    return structural_properties(feeder.write(tmp_path / "jsonld"), MODEL_ID)
 
 
 def test_example_feeder(tmp_path):
@@ -44,6 +44,34 @@ def test_example_feeder(tmp_path):
         "gk:secondaryModeling": "gk:SecondaryModeling.IndividualCustomers",
         "gk:geographicSpecificity": "gk:GeographicSpecificity.LatLong",
     }
+
+
+def test_template_tank_end_is_skipped(tmp_path):
+    """A TransformerTankConfiguration's ends, with no Terminal, are catalogue data (CIMHub's GLM
+    importer), not ends of a transformer."""
+    feeder = example_feeder()
+    configuration = feeder.add(cim.TransformerTankConfiguration(mRID=feeder.mrid()))
+    for number in (1, 2):
+        feeder.add(
+            cim.TransformerTankEnd(
+                mRID=feeder.mrid(),
+                endNumber=number,
+                TankConfiguration=configuration,
+            )
+        )
+    expected = describe_feeder(example_feeder(), tmp_path / "plain")
+    assert describe_feeder(feeder, tmp_path / "template") == expected
+
+
+def test_tank_end_with_no_terminal_or_configuration_is_refused(tmp_path):
+    feeder = example_feeder()
+    end = feeder.add(cim.TransformerTankEnd(mRID=feeder.mrid(), endNumber=1))
+    with pytest.raises(
+        ValueError,
+        match=rf"TransformerTankEnd {end.mRID}: cim:TransformerEnd.Terminal has no "
+        "ConductingEquipment",
+    ):
+        describe_feeder(feeder, tmp_path)
 
 
 @pytest.mark.parametrize(
@@ -138,13 +166,76 @@ def test_regulator_bank_at_the_feeder_head_is_the_substation_ltc(tmp_path):
 def test_substation_transformer_ltc_is_not_a_regulator(tmp_path):
     feeder = FeederBuilder()
     feeder.source("hv", kv=115.0)
-    feeder.transformer("hv", "bus", 115.0, 12.47, WC.D, WC.Yn, tap_changer=True)
+    with feeder.frame("substation"):
+        feeder.transformer("hv", "bus", 115.0, 12.47, WC.D, WC.Yn, tap_changer=True)
     feeder.line("head", "n1", 1.0)
     record = describe_feeder(feeder, tmp_path)
     assert record["gk:substationLTC"] is True
     assert record["gk:regulatorCount"] == 0
     assert record["gk:hvConnection"] == "gk:Connection.Delta"
     assert record["gk:mvConnection"] == "gk:Connection.WyeGrounded"
+
+
+def two_bank_station(feeder: FeederBuilder, ltc_on: str | None = None, tie_open=True):
+    """A two-bus station (contract 3.5 rule 6): a Delta-WyeGrounded bank on "bus", which feeds
+    this feeder, and a WyeGrounded-WyeGrounded bank on "bus_1", which feeds a sibling, joined by
+    a bus tie. `ltc_on` puts an LTC on one bank's transformer, or a regulator bank between that
+    transformer and its bus."""
+    feeder.source("hv", kv=69.0)
+    with feeder.frame("substation"):
+        for bus, side, high in (("bus", "own", WC.D), ("bus_1", "other", WC.Yn)):
+            low = f"{bus}_regulated" if ltc_on == f"{side} regulator" else bus
+            ltc = ltc_on == f"{side} transformer"
+            feeder.transformer("hv", low, 69.0, 12.47, high, WC.Yn, tap_changer=ltc)
+            if low != bus:
+                for phase in (cim.SinglePhaseKind.A, cim.SinglePhaseKind.B, cim.SinglePhaseKind.C):
+                    feeder.regulator(low, bus, phase)
+        feeder.breaker("sibling_head", bus="bus_1")
+        feeder.switch(cim.Disconnector, "bus", "bus_1", normalOpen=tie_open)
+    feeder.line("head", "n1", 1.0)
+
+
+@pytest.mark.parametrize(
+    "ltc_on, expected",
+    [
+        (None, False),
+        ("own transformer", True),
+        ("own regulator", True),
+        ("other transformer", False),
+        ("other regulator", False),
+    ],
+)
+def test_two_bank_station_uses_the_bank_that_feeds_the_feeder(tmp_path, ltc_on, expected):
+    """contract 4.5a: the transformer whose bus feeds the feeder in the normal state."""
+    feeder = FeederBuilder()
+    two_bank_station(feeder, ltc_on)
+    record = describe_feeder(feeder, tmp_path)
+    assert record["gk:hvConnection"] == "gk:Connection.Delta"
+    assert record["gk:mvConnection"] == "gk:Connection.WyeGrounded"
+    assert record["gk:substationLTC"] is expected
+    assert record["gk:regulatorCount"] == 0
+
+
+def test_closed_bus_tie_joins_both_banks(tmp_path):
+    feeder = FeederBuilder()
+    two_bank_station(feeder, "other transformer", tie_open=False)
+    record = describe_feeder(feeder, tmp_path)
+    assert record["gk:hvConnection"] == "gk:Connection.Delta"  # equal counts go to scheme order
+    assert record["gk:substationLTC"] is True
+
+
+def test_no_bank_feeding_the_feeder_is_refused(tmp_path):
+    feeder = FeederBuilder()
+    feeder.source("hv", kv=69.0)
+    with feeder.frame("substation"):
+        feeder.transformer("hv", "bus_1", 69.0, 12.47, WC.D, WC.Yn)
+    feeder.line("head", "n1", 1.0)
+    with pytest.raises(
+        ValueError,
+        match=r"substation_VT-5e6f7a8b9c\.jsonld: no substation transformer feeds the feeder's "
+        r"head node in the normal state",
+    ):
+        describe_feeder(feeder, tmp_path)
 
 
 def test_without_substation_transformer_mv_is_the_source_connection(tmp_path):
@@ -154,6 +245,33 @@ def test_without_substation_transformer_mv_is_the_source_connection(tmp_path):
     record = describe_feeder(feeder, tmp_path)
     assert "gk:hvConnection" not in record
     assert record["gk:mvConnection"] == "gk:Connection.Wye"
+
+
+@pytest.mark.parametrize("grounded, expected", [(False, "Wye"), (True, "WyeGrounded")])
+def test_two_source_station_uses_the_source_on_the_feeding_bus(tmp_path, grounded, expected):
+    """contract 4.5a: without a substation transformer, the EnergySource on the bus that feeds
+    the feeder; the other bus, behind a normally open bus tie, has the other grounding."""
+    feeder = FeederBuilder()
+    feeder.source("bus", grounded=grounded)
+    feeder.source("bus_1", grounded=not grounded)
+    with feeder.frame("substation"):
+        feeder.breaker("sibling_head", bus="bus_1")
+        feeder.switch(cim.Disconnector, "bus", "bus_1", normalOpen=True)
+    feeder.line("head", "n1", 1.0)
+    record = describe_feeder(feeder, tmp_path)
+    assert "gk:hvConnection" not in record
+    assert record["gk:mvConnection"] == f"gk:Connection.{expected}"
+
+
+def test_no_source_feeding_the_feeder_is_refused(tmp_path):
+    feeder = FeederBuilder()
+    feeder.source("bus_1")
+    feeder.line("head", "n1", 1.0)
+    with pytest.raises(
+        ValueError,
+        match=r"substation_VT-5e6f7a8b9c\.jsonld: no EnergySource feeds the feeder's head node",
+    ):
+        describe_feeder(feeder, tmp_path)
 
 
 def test_capacitor_banks_not_single_phase_units(tmp_path):
@@ -269,9 +387,47 @@ def test_protection_counts(tmp_path):
 
 def test_head_terminal_is_required(tmp_path):
     feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
     head = feeder.feeder.NormalHeadTerminal.pop()
     head.NormalHeadFeeder = None
-    with pytest.raises(ValueError, match=r"VT-0a1b2c3d4e\.jsonld: cim:Feeder\.NormalHeadTerminal"):
+    with pytest.raises(
+        ValueError, match=r"feeder_VT-0a1b2c3d4e\.jsonld: cim:Feeder\.NormalHeadTerminal"
+    ):
+        describe_feeder(feeder, tmp_path)
+
+
+def test_head_terminal_is_the_first_feeder_equipment(tmp_path):
+    """Not the station breaker, which is in the substation frame (contract 3.5)."""
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    (breaker,) = [obj for obj in feeder.models["substation"] if isinstance(obj, cim.Breaker)]
+    feeder.feeder.NormalHeadTerminal.pop().NormalHeadFeeder = None
+    breaker.Terminals[1].NormalHeadFeeder = feeder.feeder
+    feeder.feeder.NormalHeadTerminal.append(breaker.Terminals[1])
+    with pytest.raises(ValueError, match=r"head Terminal .*Breaker .* is not in the feeder frame"):
+        describe_feeder(feeder, tmp_path)
+
+
+def test_station_regulator_is_the_substation_ltc_not_a_regulator(tmp_path):
+    """A regulator shared by the station's feeders is in the substation frame (contract 3.5)."""
+    feeder = FeederBuilder()
+    feeder.source("source")
+    with feeder.frame("substation"):
+        for phase in (cim.SinglePhaseKind.A, cim.SinglePhaseKind.B, cim.SinglePhaseKind.C):
+            feeder.regulator("source", "bus", phase)
+    feeder.line("head", "n1", 1.0)
+    record = describe_feeder(feeder, tmp_path)
+    assert record["gk:substationLTC"] is True
+    assert record["gk:regulatorCount"] == 0
+
+
+def test_station_transformer_in_the_feeder_frame_is_refused(tmp_path):
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    feeder.transformer("n1", "n2", 69.0, 12.47, WC.D, WC.Yn)
+    with pytest.raises(
+        ValueError, match=r"feeder_VT-0a1b2c3d4e\.jsonld: PowerTransformer .*above"
+    ):
         describe_feeder(feeder, tmp_path)
 
 
@@ -282,26 +438,113 @@ def test_segment_without_length_names_file_and_field(tmp_path):
         describe_feeder(feeder, tmp_path)
 
 
-def test_missing_data_file(tmp_path):
-    with pytest.raises(ValueError, match=r"VT-0a1b2c3d4e\.jsonld: file is missing"):
-        structural_properties(tmp_path / "VT-0a1b2c3d4e.jsonld")
+def test_missing_jsonld_directory(tmp_path):
+    with pytest.raises(ValueError, match=r"jsonld: directory is missing"):
+        structural_properties(tmp_path / "jsonld", MODEL_ID)
+
+
+def test_missing_feeder_frame(tmp_path):
+    jsonld_dir = FeederBuilder().write(tmp_path / "jsonld")
+    (jsonld_dir / f"feeder_{MODEL_ID}.jsonld").unlink()
+    with pytest.raises(ValueError, match=r"feeder_VT-0a1b2c3d4e\.jsonld: file is missing"):
+        structural_properties(jsonld_dir, MODEL_ID)
+
+
+def test_missing_area_frame(tmp_path):
+    jsonld_dir = FeederBuilder().write(tmp_path / "jsonld")
+    (jsonld_dir / "area.jsonld").unlink()
+    with pytest.raises(ValueError, match=r"area\.jsonld: file is missing \(the area frame\)"):
+        structural_properties(jsonld_dir, MODEL_ID)
+
+
+def test_feeder_outside_the_area_frame_is_refused(tmp_path):
+    """The Feeder is in the area frame, not the feeder frame (contract 3.5, 0.5.0)."""
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    feeder.models["area"].remove(feeder.feeder)
+    feeder.add(feeder.feeder, "feeder")
+    with pytest.raises(
+        ValueError,
+        match=r"area\.jsonld: 0 cim:Feeder objects contain the equipment of "
+        r"feeder_VT-0a1b2c3d4e\.jsonld; expected exactly 1",
+    ):
+        describe_feeder(feeder, tmp_path)
+
+
+def test_feeder_frame_in_two_feeders_is_refused(tmp_path):
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    other = feeder.add(cim.Feeder(mRID=feeder.mrid()), "area")
+    feeder.line("n1", "n2", 1.0).EquipmentContainer = other
+    with pytest.raises(ValueError, match=r"area\.jsonld: 2 cim:Feeder objects contain"):
+        describe_feeder(feeder, tmp_path)
+
+
+def test_one_substation_frame(tmp_path):
+    feeder = FeederBuilder()
+    feeder.line("head", "n1", 1.0)
+    jsonld_dir = feeder.write(tmp_path / "jsonld")
+    (jsonld_dir / "substation_VT-5e6f7a8b9c.jsonld").rename(jsonld_dir / "substation_a.jsonld")
+    (jsonld_dir / "substation_b.jsonld").write_text((jsonld_dir / "boundary.jsonld").read_text())
+    with pytest.raises(
+        ValueError, match=r"holds 2 substation_\*\.jsonld files; expected exactly 1"
+    ):
+        structural_properties(jsonld_dir, MODEL_ID)
+
+
+def ieee13_models(network: NodeBreakerModel) -> dict[str, list]:
+    """IEEE 13 split into frames (contract 3.5): the Substation, the source, the substation
+    transformer and the breaker, with their base voltages, in the substation frame; the
+    breaker's feeder-side node "brkr" as the head node in the boundary; the Feeder and the
+    restated Substation in the area frame; and the rest in the feeder frame."""
+    by_name = {
+        obj.name: obj
+        for cim_class in (cim.EnergySource, cim.PowerTransformer, cim.Breaker)
+        for obj in network.graph[cim_class].values()
+    }
+    station = [by_name["source"], by_name["sub3"], by_name["brkr1"]]
+    ends = list(by_name["sub3"].PowerTransformerEnd)
+    substations = list(network.graph[cim.Substation].values())
+    substation = [*substations, *station, *ends]
+    substation += [obj.BaseVoltage for obj in [*station, *ends] if obj.BaseVoltage is not None]
+    for equipment in station:
+        for terminal in equipment.Terminals:
+            substation += [terminal, terminal.ConnectivityNode]
+    head = next(
+        t.ConnectivityNode for t in by_name["brkr1"].Terminals if t.ConnectivityNode.name == "brkr"
+    )
+    substation.remove(head)
+    models = {
+        "area": [*substations, *network.graph[cim.Feeder].values()],
+        "substation": list(dict.fromkeys(substation)),
+        "boundary": [head],
+    }
+    placed = {obj.identifier for objs in models.values() for obj in objs}
+    models["feeder"] = [
+        obj
+        for by_id in network.graph.values()
+        for obj in by_id.values()
+        if obj.identifier not in placed or isinstance(obj, cim.BaseVoltage)
+    ]
+    return models
 
 
 def test_ieee13(tmp_path):
-    """IEEE 13 (CIMHub CIM XML) written as JSON-LD, with the head breaker as the feeder head,
-    which the CIM XML does not set."""
+    """IEEE 13 (CIMHub CIM XML) split into frames, with the regulator's terminal on the head
+    node as the feeder head, which the CIM XML does not set."""
     use_profile()
     network = NodeBreakerModel(
         container=None, connection=XMLFile(str(IEEE13_XML)), distributed=False
     )
     (feeder,) = network.graph[cim.Feeder].values()
-    (breaker,) = network.graph[cim.Breaker].values()
-    head = next(t for t in breaker.Terminals if t.ConnectivityNode.name == "650")
+    (regulator,) = [
+        obj for obj in network.graph[cim.PowerTransformer].values() if obj.name == "Reg"
+    ]
+    head = next(t for t in regulator.Terminals if t.ConnectivityNode.name == "brkr")
     head.NormalHeadFeeder = feeder
     feeder.NormalHeadTerminal.append(head)
-    path = tmp_path / "ieee13.jsonld"
-    write_json_ld(network, str(path), convention="si", header={"dct:title": "ieee13"})
-    record = structural_properties(path)
+    jsonld_dir = write_models(tmp_path / "jsonld", ieee13_models(network))
+    record = structural_properties(jsonld_dir, MODEL_ID)
     assert record["gk:primaryVoltage"] == 4.16
     assert record["gk:voltageClass"] == 5
     assert record["gk:feederLength"] == 2.499  # 8,200 ft of line at 4.16 kV
@@ -311,7 +554,7 @@ def test_ieee13(tmp_path):
     # The profile has no TransformerEndInfo.connectionKind, so the center-tapped tank's
     # secondary connection is unknown.
     assert record["gk:lvConnection"] is None
-    # The three single-phase regulators at 650 are one bank, at the feeder head.
+    # The three single-phase regulator tanks on the head node are one bank, at the feeder head.
     assert record["gk:substationLTC"] is True
     assert record["gk:regulatorCount"] == 0
     assert record["gk:capacitorCount"] == 2

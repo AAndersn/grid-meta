@@ -127,13 +127,16 @@ class Source(ConfiguredBaseModel):
     utility: Utility = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     substation: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     feeder: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
+    distribution_area: str = Field(default=..., description="""The source's name for the package's distribution area, from which the area group is computed (contract 2 and 3.1). Never published.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     state: str = Field(default=..., description="""USPS code of the state of the feeder head.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     source_export_date: date = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     model_class: ModelClass = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     use_case: UseCase = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     applications: list[Application] = Field(default=..., description="""The applications of an ApplicationSpecific model; empty otherwise.""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
-    multi_feeder_compatible: bool = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
+    multi_feeder_compatible: bool = Field(default=..., description="""True only when the area test passes for the package's area (contract 3.5).""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     model_scope: str = Field(default=..., description="""The scope in which the utility's source keys are unique, as the .cimtbl master states it in Model = (contract 2).""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
+    feeder_area: str = Field(default=..., description="""The mRID of the package's own feederArea ConnectedArea (contract 3.1).""", json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
+    boundary_feeders: dict[str, Union[str, BoundaryFeeder]] = Field(default=..., description="""Boundary node mRID -> model_id of the feeder frame on the node's feeder side, for every head node and tie side node the archive ships, possibly the whole area (contract 3.1).""", min_length=1, json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     pipeline: Pipeline = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
     forbidden_strings: list[str] = Field(default=..., description="""Every real name that must not appear in a shipped file.""", min_length=1, json_schema_extra = { "linkml_meta": {'domain_of': ['Source']} })
 
@@ -160,6 +163,42 @@ class Source(ConfiguredBaseModel):
                     raise ValueError(err_msg)
         elif isinstance(v, str) and not pattern.match(v):
             err_msg = f"Invalid state format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+    @field_validator('feeder_area')
+    def pattern_feeder_area(cls, v):
+        pattern=re.compile(r"^\S")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid feeder_area format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid feeder_area format: {v}"
+            raise ValueError(err_msg)
+        return v
+
+
+class BoundaryFeeder(ConfiguredBaseModel):
+    """
+    One entry of boundary_feeders, written as \"<node mRID>\": \"<model_id>\".
+    """
+    linkml_meta: ClassVar[LinkMLMeta] = LinkMLMeta({'from_schema': 'https://gridkitchen.pnnl.gov/ns/gk/package'})
+
+    node: str = Field(default=..., description="""The boundary node's mRID.""", json_schema_extra = { "linkml_meta": {'domain_of': ['BoundaryFeeder']} })
+    model_id: str = Field(default=..., json_schema_extra = { "linkml_meta": {'domain_of': ['BoundaryFeeder']} })
+
+    @field_validator('model_id')
+    def pattern_model_id(cls, v):
+        pattern=re.compile(r"^[A-Z]{2}-[0-9a-f]{10}$")
+        if isinstance(v, list):
+            for element in v:
+                if isinstance(element, str) and not pattern.match(element):
+                    err_msg = f"Invalid model_id format: {element}"
+                    raise ValueError(err_msg)
+        elif isinstance(v, str) and not pattern.match(v):
+            err_msg = f"Invalid model_id format: {v}"
             raise ValueError(err_msg)
         return v
 
@@ -394,6 +433,7 @@ class NoiseSettings(ConfiguredBaseModel):
 # Model rebuild
 # see https://pydantic-docs.helpmanual.io/usage/models/#rebuilding-a-model
 Source.model_rebuild()
+BoundaryFeeder.model_rebuild()
 Utility.model_rebuild()
 Pipeline.model_rebuild()
 Tools.model_rebuild()

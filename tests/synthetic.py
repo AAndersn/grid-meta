@@ -1,19 +1,33 @@
-"""Synthetic feeder packages for the tests: tiny CIM networks written by CIM-Graph, as a pipeline
-writes them (cim18v17, SI convention). They hold no real utility data."""
+"""Synthetic feeder packages for the tests: tiny CIM networks written by CIM-Graph, split into
+the per-model files of a contract 0.6.0 package (3.5) as a pipeline writes them (cim18v17, SI
+convention, no header). They hold no real utility data."""
 
 import json
 import os
 import shutil
+import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from uuid import UUID
 
 import cimprofiles.cim18.cim18v17 as cim
 from cimgraph.core import get_cim_profile
-from cimgraph.models import FeederModel
+from cimgraph.models import NodeBreakerModel
 from cimgraph.utils import write_json_ld
 
 CONTRACT_DIR = Path(__file__).parent / "data" / "contract"
 MODEL_ID = "VT-0a1b2c3d4e"
+SIBLING_GROUP = "VT-5e6f7a8b9c"
+# jsonld/ file stem of each model; the feeder frame also has an SSH (contract 3.5).
+MODEL_FILES = {
+    "area": "area",
+    "boundary": "boundary",
+    "substation": f"substation_{SIBLING_GROUP}",
+    "feeder": f"feeder_{MODEL_ID}",
+}
+SSH_FILES = {"feeder": f"ssh_{MODEL_ID}"}
+# The situation data of the feeder SSH (contract 3.5 rule 9).
+SSH_ATTRIBUTES = {"p", "q"}
 AUTHORITY = "https://gridkitchen.pnnl.gov/authority/test"
 WGS84 = "urn:ogc:def:crs:OGC:1.3:CRS84"
 
@@ -27,40 +41,73 @@ def use_profile() -> None:
 
 
 class FeederBuilder:
-    """A feeder whose head is a breaker from node "bus" to node "head" at the primary voltage."""
+    """A package's models (contract 3.5). The substation frame declares the Substation and has a
+    breaker from its bus, node "bus", to the head node "head", which is in the boundary. The area
+    frame holds the Feeder and restates the Substation. Objects go to the feeder frame unless
+    added inside `frame()`; each frame declares the base voltages it uses. The feeder's
+    NormalHeadTerminal is the terminal, on "head", of its first equipment there."""
 
     def __init__(self, primary_kv: float = 12.47):
         use_profile()
         self.count = 0
-        self.feeder = cim.Feeder(mRID=self.mrid(), name="feeder")
-        self.network = FeederModel(container=self.feeder, connection=None, distributed=False)
-        self.network.add_to_graph(self.feeder)
+        self.models = {model: [] for model in MODEL_FILES}
+        self.model = "feeder"
         self.base_voltages = {}
         self.nodes = {}
         self.primary_kv = primary_kv
-        head = self.switch(cim.Breaker, "bus", "head")
-        head.Terminals[0].NormalHeadFeeder = self.feeder
-        self.feeder.NormalHeadTerminal.append(head.Terminals[0])
+        self.substation = self.add(cim.Substation(mRID=self.mrid()), "substation")
+        self.add(self.substation, "area")
+        self.feeder = self.add(
+            cim.Feeder(
+                mRID=self.mrid(), name="feeder", NormalEnergizingSubstation=self.substation
+            ),
+            "area",
+        )
+        with self.frame("substation"):
+            self.breaker("head")
 
     def mrid(self) -> str:
         self.count += 1
         return str(UUID(int=self.count))
 
-    def add(self, obj):
-        self.network.add_to_graph(obj)
+    def add(self, obj, model: str | None = None):
+        """Declares the object in a model; a second declaration restates it (contract 3.5)."""
+        objects = self.models[model or self.model]
+        if obj not in objects:
+            objects.append(obj)
         return obj
+
+    @contextmanager
+    def frame(self, model: str):
+        """Objects added inside go to that model."""
+        self.model = model
+        try:
+            yield
+        finally:
+            self.model = "feeder"
+
+    def container(self):
+        return {"substation": self.substation, "feeder": self.feeder}.get(self.model)
 
     def base_voltage(self, kv: float):
         if kv not in self.base_voltages:
-            self.base_voltages[kv] = self.add(
-                cim.BaseVoltage(mRID=self.mrid(), nominalVoltage=cim.Voltage(kv, "kV"))
+            self.base_voltages[kv] = cim.BaseVoltage(
+                mRID=self.mrid(), nominalVoltage=cim.Voltage(kv, "kV")
             )
-        return self.base_voltages[kv]
+        return self.add(self.base_voltages[kv])
 
-    def node(self, name: str):
+    def node(self, name: str, model: str | None = None):
         if name not in self.nodes:
-            self.nodes[name] = self.add(cim.ConnectivityNode(mRID=self.mrid(), name=name))
+            model = "boundary" if name == "head" else model
+            self.nodes[name] = self.add(cim.ConnectivityNode(mRID=self.mrid(), name=name), model)
         return self.nodes[name]
+
+    def breaker(self, head_node: str, bus: str = "bus"):
+        """A station breaker from a bus to a feeder's head node, a boundary node."""
+        self.node(head_node, "boundary")
+        breaker = self.switch(cim.Breaker, bus, head_node, areaBoundary=True)
+        breaker.EquipmentContainer = self.substation
+        return breaker
 
     def terminal(self, equipment, node_name: str, phases=None):
         node = self.node(node_name)
@@ -75,6 +122,9 @@ class FeederBuilder:
         )
         equipment.Terminals.append(terminal)
         node.Terminals.append(terminal)
+        if node_name == "head" and self.model == "feeder" and not self.feeder.NormalHeadTerminal:
+            terminal.NormalHeadFeeder = self.feeder
+            self.feeder.NormalHeadTerminal.append(terminal)
         return terminal
 
     def equipment(self, cim_class, nodes: list[str], kv: float | None = None, **attributes):
@@ -83,7 +133,7 @@ class FeederBuilder:
             cim_class(
                 mRID=self.mrid(),
                 BaseVoltage=self.base_voltage(kv),
-                EquipmentContainer=self.feeder,
+                EquipmentContainer=self.container(),
                 **attributes,
             )
         )
@@ -119,7 +169,7 @@ class FeederBuilder:
         tap_changer=False,
     ):
         transformer = self.add(
-            cim.PowerTransformer(mRID=self.mrid(), EquipmentContainer=self.feeder)
+            cim.PowerTransformer(mRID=self.mrid(), EquipmentContainer=self.container())
         )
         for number, node, kv, connection, grounded, phases in (
             (1, node1, kv1, connection1, True, None),
@@ -181,7 +231,9 @@ class FeederBuilder:
         return self.equipment(cim.PowerElectronicsConnection, [node], kv, ratedS=rating)
 
     def source(self, node: str, kv: float | None = None, grounded: bool | None = None):
-        return self.equipment(cim.EnergySource, [node], kv, grounded=grounded)
+        """The EnergySource, always in the substation frame."""
+        with self.frame("substation"):
+            return self.equipment(cim.EnergySource, [node], kv, grounded=grounded)
 
     def position(self, crs_urn: str | None, x: float = -72.5, y: float = 44.2):
         crs = None
@@ -194,39 +246,104 @@ class FeederBuilder:
             )
         )
 
-    def owned_tie(self, own_node: str):
-        """What a feeder that owns a tie carries (contract 3.5, 0.3.0): from areas.cimtbl, the
-        distribution area's ConnectedAreas, including those of two other feeders; from
-        boundary_<set>.cimtbl, the boundary node "far" in that area; and in its own parts, the
-        normally open tie switch from `own_node` to "far". The other feeder's segment, in its own
-        package, ends on "far", so here the node has only the tie's terminal."""
+    def area(self, own_node: str, siblings: int = 2):
+        """What a package of a tied distribution area carries (contract 3.5, 0.6.0).
+
+        - area frame: every ConnectedArea of the area, from the restated transmission area to
+          three feeder areas; a Feeder per sibling and one of the other substation, which is
+          restated; and the normally open tie from `own_node` to "far", contained by the
+          distribution area;
+        - substation frame: a breaker per sibling feeder, ending at its head node;
+        - boundary: the sibling head nodes and both sides of the tie. The other feeder's segment,
+          in its own package, ends on "far", so here the node has only the tie's terminal.
+        """
         area_kind = cim.ConnectedAreaKind
-        distribution = self.add(
-            cim.ConnectedArea(mRID=self.mrid(), kind=area_kind.distributionArea)
-        )
-        service = self.add(
-            cim.ConnectedArea(
-                mRID=self.mrid(),
-                kind=area_kind.substationServiceArea,
-                ContainedWithin=distribution,
+        with self.frame("area"):
+            transmission = self.add(
+                cim.ConnectedArea(mRID=self.mrid(), kind=area_kind.transmissionArea)
             )
-        )
-        for _feeder in range(3):
-            self.add(
+            distribution = self.add(
                 cim.ConnectedArea(
-                    mRID=self.mrid(), kind=area_kind.feederArea, ContainedWithin=service
+                    mRID=self.mrid(),
+                    kind=area_kind.distributionArea,
+                    ContainedWithin=transmission,
                 )
             )
-        far = self.node("far")
-        far.ConnectivityNodeContainer = distribution
-        far.BaseVoltage = self.base_voltage(self.primary_kv)
-        return self.switch(
-            cim.LoadBreakSwitch, own_node, "far", normalOpen=True, areaBoundary=True
-        )
+            service = self.add(
+                cim.ConnectedArea(
+                    mRID=self.mrid(),
+                    kind=area_kind.substationServiceArea,
+                    ContainedWithin=distribution,
+                )
+            )
+            for _feeder in range(3):
+                self.add(
+                    cim.ConnectedArea(
+                        mRID=self.mrid(), kind=area_kind.feederArea, ContainedWithin=service
+                    )
+                )
+            other = self.add(cim.Substation(mRID=self.mrid()))
+            for substation in [self.substation] * siblings + [other]:
+                self.add(cim.Feeder(mRID=self.mrid(), NormalEnergizingSubstation=substation))
+        with self.frame("substation"):
+            for sibling in range(siblings):
+                self.breaker(f"sibling_head_{sibling}")
+        own = self.nodes[own_node]
+        self.models["feeder"].remove(own)
+        self.add(own, "boundary")
+        for node in (own, self.node("far", "boundary")):
+            node.ConnectivityNodeContainer = distribution
+        with self.frame("area"):
+            tie = self.switch(
+                cim.LoadBreakSwitch, own_node, "far", normalOpen=True, areaBoundary=True, open=True
+            )
+        tie.EquipmentContainer = distribution
+        return tie
 
-    def write(self, path: Path) -> Path:
-        write_json_ld(self.network, str(path), convention="si", header={"dct:title": path.stem})
-        return path
+    def write(self, jsonld_dir: Path) -> Path:
+        return write_models(jsonld_dir, self.models)
+
+
+def _document(objects: list) -> dict:
+    """The JSON-LD of some objects, without the dataset header CIM-Graph writes: as a per-model
+    file of a package (contract 5.2)."""
+    network = NodeBreakerModel(container=None, connection=None, distributed=False)
+    for obj in objects:
+        network.add_to_graph(obj)
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "model.jsonld"
+        write_json_ld(network, str(path), convention="si")
+        document = json.loads(path.read_text())
+    return {"@context": document["@context"], "@graph": document["@graph"]}
+
+
+def _split_situation(graph: list) -> list:
+    """Moves the SSH attributes out of a frame's rows, returning the SSH's Update rows."""
+    updates = []
+    for item in graph:
+        situation = {
+            key: value for key, value in item.items() if key.rsplit(".", 1)[-1] in SSH_ATTRIBUTES
+        }
+        if situation:
+            updates.append({"@id": item["@id"], "@type": item["@type"], **situation})
+            for key in situation:
+                del item[key]
+    return updates
+
+
+def write_models(jsonld_dir: Path, models: dict[str, list]) -> Path:
+    """jsonld/ of a package: one file per model of MODEL_FILES, and an SSH per frame."""
+    jsonld_dir.mkdir(parents=True, exist_ok=True)
+    for model, stem in MODEL_FILES.items():
+        document = _document(models.get(model, []))
+        if model in SSH_FILES:
+            ssh = {
+                "@context": document["@context"],
+                "@graph": _split_situation(document["@graph"]),
+            }
+            (jsonld_dir / f"{SSH_FILES[model]}.jsonld").write_text(json.dumps(ssh, indent=4))
+        (jsonld_dir / f"{stem}.jsonld").write_text(json.dumps(document, indent=4))
+    return jsonld_dir
 
 
 def example_feeder() -> FeederBuilder:
@@ -265,5 +382,5 @@ def write_package(
     (package / "private" / "service_points.csv").write_text(service_points)
     if sanitize is not None:
         write_json(package / "sanitize.json", sanitize)
-    feeder.write(package / f"{MODEL_ID}.jsonld")
+    feeder.write(package / "jsonld")
     return package

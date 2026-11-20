@@ -220,7 +220,7 @@
     },
     "gk:recloserCount": {
       "label": "Reclosers",
-      "description": "Number of reclosers, including the feeder head device.",
+      "description": "Number of reclosers on the feeder. A head device inside the substation is the station's breaker and is not counted.",
       "range": "xsd:integer",
       "unit": null,
       "unitIRI": null,
@@ -284,7 +284,7 @@
     },
     "gk:multiFeederCompatible": {
       "label": "Multi-feeder compatible",
-      "description": "Whether the shared substation objects have the same identifiers in every sibling feeder package, so that sibling models can be joined.",
+      "description": "Whether the package passes its distribution area's area test, so that it joins the packages of its substation and of the feeders it ties to.",
       "range": "xsd:boolean",
       "unit": null,
       "unitIRI": null,

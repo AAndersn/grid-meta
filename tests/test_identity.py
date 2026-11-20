@@ -1,8 +1,8 @@
-"""model_id, sibling_group and utility_code (contract section 2)."""
+"""model_id, sibling_group, area_group and utility_code (contract section 2)."""
 
 import pytest
 
-from gridmeta.identity import model_id, sibling_group, utility_code
+from gridmeta.identity import area_group, model_id, sibling_group, utility_code
 
 NAMES = ("Example Electric Cooperative", "Example Substation", "Example Feeder 1")
 KEY = "gridmeta-test-key"
@@ -59,6 +59,36 @@ def test_sibling_group_is_shared_by_the_substation_feeders():
 def test_invalid_sibling_group_input_is_rejected(state, names, key, message):
     with pytest.raises(ValueError, match=message):
         sibling_group(state, *names, key=key)
+
+
+AREA = "Example Distribution Area"
+
+
+def test_area_group_vector():
+    # printf '%s' 'Example Electric Cooperative/area/Example Distribution Area' \
+    #   | openssl dgst -sha256 -hmac 'gridmeta-test-key'   -> 5be1e3f4f7...
+    assert area_group("VT", NAMES[0], AREA, key=KEY) == "VT-5be1e3f4f7"
+
+
+def test_area_named_like_a_substation_gets_its_own_group():
+    assert area_group("VT", NAMES[0], NAMES[1], key=KEY) == "VT-f7871c2ad0"
+    assert area_group("VT", NAMES[0], NAMES[1], key=KEY) != sibling_group(
+        "VT", NAMES[0], NAMES[1], key=KEY
+    )
+
+
+@pytest.mark.parametrize(
+    "state, names, key, message",
+    [
+        ("vt", (NAMES[0], AREA), KEY, "area_group: state"),
+        ("VT", ("", AREA), KEY, "utility"),
+        ("VT", (NAMES[0], ""), KEY, "distribution_area"),
+        ("VT", (NAMES[0], AREA), "", "GK_MODEL_ID_KEY"),
+    ],
+)
+def test_invalid_area_group_input_is_rejected(state, names, key, message):
+    with pytest.raises(ValueError, match=message):
+        area_group(state, *names, key=key)
 
 
 def test_utility_code_vector():
